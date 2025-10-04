@@ -171,3 +171,166 @@ img {
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
 }
 
+/* About Section */
+.about {
+    background-color: var(--darker-bg);
+    text-align: center;
+}
+
+.about p {
+    max-width: 800px;
+    margin: 0 auto 30px;
+}
+
+.social-icons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.social-icons a {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.social-icons a:hover {
+    background-color: var(--primary-color);
+    transform: translateY(-3px);
+}
+
+/* Work Section */
+.work {
+    background-color: var(--darker-bg);
+    text-align: center;
+}
+
+.work > p {
+    margin-bottom: 60px;
+}
+
+.project-card {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 80px;
+    text-align: left;
+}
+
+.project-card.reverse {
+    flex-direction: row-reverse;
+}
+
+.project-info {
+    flex: 1;
+}
+
+.project-image {
+    flex: 1;
+}
+
+.project-image img {
+    border-radius: 5px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.featured {
+    color: var(--accent-text);
+    font-size: 0.9rem;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.project-links {
+    display: flex;
+    gap: 15px;
+}
+
+.project-links a {
+    font-size: 1.2rem;
+}
+
+/* Contact Section */
+.contact {
+    background-color: var(--darker-bg);
+    text-align: center;
+}
+
+.contact h3 {
+    margin-bottom: 10px;
+}
+
+.contact > p {
+    max-width: 600px;
+    margin: 0 auto 40px;
+}
+
+.contact-content {
+    display: flex;
+    gap: 50px;
+    margin-top: 50px;
+}
+
+.contact-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    align-items: flex-start;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.icon-box {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+}
+
+.contact-form {
+    flex: 1;
+    text-align: left;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 12px 15px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    color: var(--light-text);
+    font-family: 'Poppins', sans-serif;
+    resize: none;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
