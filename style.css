@@ -1,5 +1,5 @@
 /* Google Fonts Import */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap');
 
 /* Reset and Base Styles */
 * {
@@ -10,11 +10,11 @@
 
 :root {
     --primary-color: #8a2be2;
-    --accent-color: #00e6e6;
+    --accent-color: #6400e6;
     --dark-bg: #120b1e;
     --darker-bg: #0a0612;
-    --light-text: #ffffff;
-    --accent-text: #66e0e0;
+    --light-text: #CCD6F6;
+    --accent-text: #7250ec;
     --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, #6a3093 100%);
     --gradient-button: linear-gradient(135deg, var(--accent-color) 0%, #8a2be2 100%);
 }
@@ -24,7 +24,8 @@ html {
 }
 
 body {
-    font-family: 'Poppins', sans-serif;
+     font-family: "Josefin Sans", sans-serif;
+    font-optical-sizing: auto;
     background: var(--darker-bg);
     color: var(--light-text);
     line-height: 1.6;
@@ -185,16 +186,20 @@ img {
 .about {
     background-color: var(--darker-bg);
     text-align: center;
+    padding-bottom: 10rem;
 }
 
 .about p {
     max-width: 800px;
     margin: 0 auto 30px;
+    letter-spacing: 1px;
+    word-spacing: 2px;
+    padding-bottom: 10rem;
 }
 
 .social-icons {
     display: flex;
-    gap: 15px;
+    gap: 25px;
     justify-content: center;
     margin-top: 30px;
 }
@@ -210,13 +215,11 @@ img {
     transition: all 0.3s ease;
 }
 
-.social-icons a:hover {
-    background-color: var(--primary-color);
-    transform: translateY(-3px);
-}
 
 /* Work Section */
-
+.work{
+    text-align: center;
+}
 .projects-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -257,7 +260,7 @@ img {
 }
 
 .featured {
-  color: #66e0e0;
+  color: #7127BA;
   font-size: 0.95rem;
   font-weight: 500;
   margin-bottom: 10px;
@@ -291,7 +294,7 @@ img {
 }
 
 .project-links a:hover {
-  color: #66e0e0;
+  color: var(--accent-text);
 }
 
 
@@ -371,7 +374,6 @@ img {
 .form-group input:focus,
 .form-group textarea:focus {
     outline: none;
-    border-color: var(--accent-color);
 }
 
 
