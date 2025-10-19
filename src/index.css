@@ -1,13 +1,71 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap');
+
+/* Tailwind base/components/utilities */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* minimal resets / vars */
+:root{
+  --primary-color: #8a2be2;
+  --accent-color: #6400e6;
+  --dark-bg: #120b1e;
+  --darker-bg: #0a0612;
+  --light-text: #CCD6F6;
+  --accent-text: #7250ec;
+  --gradient-button: linear-gradient(135deg, var(--accent-color) 0%, var(--primary-color) 100%);
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+/* apply global font + background */
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  @apply bg-[color:var(--darker-bg)] text-[color:var(--light-text)] leading-relaxed;
+  font-family: "Josefin Sans", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+/* small helpers that are nicer in plain CSS */
+.gradient-heading {
+  background: linear-gradient(100deg, #00e6e6, #8a2be2, #ff44cc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+/* button: we still create a class but use tailwind utilities via @apply */
+.btn-primary {
+  background: var(--gradient-button);
+  @apply px-6 py-2 rounded-full text-[color:var(--light-text)] cursor-pointer font-medium uppercase text-sm tracking-wider transition-transform;
+}
+.btn-primary:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+/* small reusable card class */
+.project-card-custom {
+  background: rgba(28,12,44,0.9);
+  border-radius: 0.9375rem; /* 15px */
+  overflow: hidden;
+  box-shadow: 0 6px 32px rgba(138,43,226,0.15);
+}
+
+/* icon container similar in many places */
+.icon-box {
+  background: rgba(255,255,255,0.06);
+  border-radius: 0.3125rem; /* 5px */
+}
+
+/* nav backdrop */
+.navbar-backdrop {
+  background-color: rgba(10,6,18,0.8);
+  backdrop-filter: blur(10px);
 }
