@@ -16,11 +16,8 @@ module.exports = {
         josefin: ['"Josefin Sans"', "sans-serif"],
       },
       backgroundImage: {
-        // utility classes can be used: bg-gradient-primary / bg-gradient-button
         'gradient-primary': 'linear-gradient(135deg, #8a2be2 0%, #6a3093 100%)',
         'gradient-button': 'linear-gradient(135deg, #6400e6 0%, #8a2be2 100%)',
-        // if you want gradient-heading via utility:
-        'gradient-heading': 'linear-gradient(100deg, #00e6e6, #8a2be2, #ff44cc)'
       },
       boxShadow: {
         'card-md': '0 6px 32px rgba(138, 43, 226, 0.15)',

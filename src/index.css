@@ -60,7 +60,7 @@ body {
 
 /* icon container similar in many places */
 .icon-box {
-  background: rgba(255,255,255,0.06);
+  background: rgba(179, 22, 22, 0.06);
   border-radius: 0.3125rem; /* 5px */
 }
 
