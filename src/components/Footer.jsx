@@ -7,13 +7,13 @@ export default function Footer() {
         <p className="text-sm opacity-70 mb-2 md:mb-0">&copy; 2025 Mohamed. All rights reserved.</p>
 
         <div className="social-icons flex items-center gap-6">
-          <a href="https://x.com/med_igher" className="text-xl">
+          <a target="_blank"   rel="noreferrer" href="https://x.com/med_igher" className="text-xl">
             <i className="fab fa-twitter"></i>
           </a>
-          <a href="https://github.com/moirhira" className="text-xl">
+          <a target="_blank"   rel="noreferrer" href="https://github.com/moirhira" className="text-xl">
             <i className="fab fa-github"></i>
           </a>
-          <a href="https://www.linkedin.com/in/mohamed-irhirallah-70690125b/" className="text-xl">
+          <a target="_blank"   rel="noreferrer" href="https://www.linkedin.com/in/mohamed-irhirallah-70690125b/" className="text-xl">
             <i className="fab fa-linkedin"></i>
           </a>
         </div>
