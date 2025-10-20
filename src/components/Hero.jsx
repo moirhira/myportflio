@@ -14,7 +14,7 @@ export default function Hero() {
                 src="/media/mypic.png"
                 alt="Mohamed"
                 loading="lazy"
-                className="w-[300px] sm:w-[260px] md:w-[310px] lg:w-[400px] xl:w-[430px] rounded-lg shadow-2xl object-cover object-top lg:object-center"
+                className="w-[300px] sm:w-[260px] md:w-[310px] lg:w-[400px] xl:w-[430px] rounded-lg object-cover object-top lg:object-center"
               />
             </div>
           </div>

@@ -7,7 +7,7 @@ import Footer from './components/Footer';
 
 function App() {
   return (
-    <div className="App">
+    <div className="App flex-col justify-center items-center lg:gap-4">
       <Navbar/>
       <Hero/>
       <About/>
