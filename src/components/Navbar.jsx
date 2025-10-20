@@ -9,7 +9,7 @@ function Navbar() {
             HOME
           </a>
           <a href="#about" className="px-3 py-2 font-medium tracking-wider text-sm hover:text-[color:var(--accent-text)]">ABOUT</a>
-          <a href="#work" className="px-3 py-2 font-medium tracking-wider text-sm hover:text-[color:var(--accent-text)]">WORK</a>
+          <a href="#projects" className="px-3 py-2 font-medium tracking-wider text-sm hover:text-[color:var(--accent-text)]">PROJECTS</a>
           <a href="#contact" className="px-3 py-2 font-medium tracking-wider text-sm hover:text-[color:var(--accent-text)]">CONTACT</a>
         </div>
       </div>
