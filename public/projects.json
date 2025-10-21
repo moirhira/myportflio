@@ -1,7 +1,7 @@
 [
   {
     "id": 1,
-    "image": "media/minishell.png",
+    "image": "media/mini0.png",
     "category": "Shell & OS",
     "title": "Minishell",
     "description": "Minishell — A custom UNIX shell built in C that replicates essential Bash functionalities such as command parsing, redirections, pipes, and environment variable handling. This project strengthened my understanding of process management, system calls, and low-level programming in Linux.",
@@ -10,7 +10,7 @@
   },
   {
     "id": 2,
-    "image": "media/net.png",
+    "image": "media/net2.png",
     "category": "Networking",
     "title": "NetPractice",
     "description": "NetPractice — A networking project designed to build a solid understanding of IP addressing and subnetting. Solved practical network configuration exercises by setting up routers, switches, and hosts to achieve proper connectivity. This project strengthened my knowledge of TCP/IP, routing logic, and network troubleshooting.",
@@ -19,7 +19,7 @@
   },
   {
     "id": 3,
-    "image": "media/solong.jpeg",
+    "image": "media/solong1.png",
     "category": "Games",
     "title": "So-long",
     "description": "so_long — A 2D game built in C using MiniLibX where the player navigates a map to collect items and reach the exit. This project enhanced my skills in graphics rendering, event handling, and game logic implementation.",
@@ -28,7 +28,7 @@
   },
   {
     "id": 4,
-    "image": "media/philo.png",
+    "image": "media/philo2.png",
     "category": "Concurrency & Parallelism",
     "title": "Philosophers",
     "description": "Philosophers — A multithreaded simulation in C inspired by the Dining Philosophers problem, focusing on concurrency and synchronization. Implemented thread creation, mutex handling, and timing control to prevent race conditions and deadlocks. This project deepened my understanding of parallel programming, resource sharing, and thread-safe design in C.",
@@ -37,7 +37,7 @@
   },
   {
     "id": 5,
-    "image": "media/push.png",
+    "image": "media/push1.png",
     "category": "Algorithms & Data Structures",
     "title": "Push swap",
     "description": "Push_swap — A sorting algorithm project in C focused on optimizing stack operations. Implemented custom data structures and efficient algorithms to sort integers using a limited set of stack manipulation commands. This project improved my understanding of algorithmic complexity, data structure design, and performance optimization in C.",
@@ -46,7 +46,7 @@
   },
   {
     "id": 6,
-    "image": "media/bonr.png",
+    "image": "media/born2.png",
     "category": "System Administration & Virtualization",
     "title": "Born2beRoot",
     "description": "Born2beRoot — A system administration project focused on virtualization, security, and Linux server management. Set up a secure Debian-based virtual machine with configured user permissions, firewalls, SSH, and strong password policies following strict guidelines. This project enhanced my understanding of system configuration, network security, and Linux administration.",

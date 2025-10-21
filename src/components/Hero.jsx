@@ -19,8 +19,8 @@ export default function Hero() {
             </div>
           </div>
 
-          <div className="order-2 lg:order-1 mx-auto lg:mx-0 w-full max-w-xl text-left">
-            <h1 className="text-[3.5rem] leading-tight font-semibold mb-3 md:text-[3.5rem] sm:text-3xl">
+          <div className="order-2 lg:order-1 mx-auto lg:mx-0 w-full max-w-xl lg:text-left text-center">
+            <h1 className="text-[3.5rem] leading-tight font-semibold mb-5 md:text-[3.5rem] sm:text-3xl">
               Hi, I'm Mohamed
             </h1>
 
@@ -28,15 +28,14 @@ export default function Hero() {
               Full-Stack Developer exploring the DevOps world
             </h2>
 
-            <p className="mb-6 opacity-90">
+            <p className=" mb-6 opacity-90 leading-8 text-xl">
               Passionate about creating smooth user experiences on the frontend,
               and now focused on mastering DevOps tools and practices to deliver
               scalable, reliable systems.
             </p>
 
             <a
-              href="media/Mohamed_Irhirallah_Resume.pdf"
-              download
+              href="media/myresume.pdf"
               target="_blank"
               rel="noreferrer"
               className="btn-primary inline-flex items-center gap-2"

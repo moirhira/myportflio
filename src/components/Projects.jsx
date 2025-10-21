@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from "react";
 
-/**
- * Projects - fetches /projects.json and renders the grid inside a section#work
- * - Includes heading and description so the section is complete.
- * - Uses Tailwind scroll-mt to offset the fixed navbar.
- */
 export default function Projects() {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -35,7 +30,7 @@ export default function Projects() {
   return (
     <section
       id="projects"
-      className="py-20 bg-[color:var(--darker-bg)] scroll-mt-[80px]" /* adjust 80px to match your navbar height */
+      className="py-20 bg-[color:var(--darker-bg)] scroll-mt-[80px]"
     >
       <div className="mx-auto w-11/12 max-w-1600 px-5">
         <h2 className="gradient-heading text-3xl mb-4 text-center">Recent Work</h2>

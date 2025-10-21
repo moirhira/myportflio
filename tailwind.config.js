@@ -5,13 +5,14 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: "#8a2be2",
-        accent: "#6400e6",
-        "dark-bg": "#120b1e",
-        "darker-bg": "#0a0612",
-        "light-text": "#CCD6F6",
-        "accent-text": "#7250ec",
-      },
+        primary: "#2563eb",        // vibrant blue
+        accent: "#06b6d4",         // cyan accent
+        "dark-bg": "#0a192f",      // deep navy background
+        "darker-bg": "#020c1b",    // almost black
+        "light-text": "#E6F1FF",   // soft white-blue text
+        "accent-text": "#64ffda",  // neon cyan text
+      }
+      ,
       fontFamily: {
         josefin: ['"Josefin Sans"', "sans-serif"],
       },
