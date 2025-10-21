@@ -68,7 +68,7 @@ export default function Projects() {
                 </div>
 
                 <div className="project-info p-6 flex flex-col flex-1">
-                  <span className="text-[#7127BA] text-sm font-medium mb-2 tracking-wide">
+                  <span className="text-[color:var(--primary-color)] text-sm font-medium mb-2 tracking-wide">
                     {project.category}
                   </span>
                   <h3 className="text-white text-xl mb-3">{project.title}</h3>
@@ -80,7 +80,7 @@ export default function Projects() {
                         href={project.github}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-white bg-[#181028] p-2 rounded-full text-lg hover:text-[color:var(--accent-text)] transition-colors"
+                        className="text-white bg-[#181028] px-3.5 py-2 rounded-full text-lg hover:text-[color:var(--accent-text)] transition-colors"
                         aria-label={`${project.title} GitHub`}
                       >
                         <i className="fab fa-github" />
@@ -92,10 +92,10 @@ export default function Projects() {
                         href={project.live}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-white bg-[#181028] p-2 rounded-full text-lg hover:text-[color:var(--accent-text)] transition-colors"
+                        className="text-white bg-[#181028] px-3.5 py-2  rounded-full text-lg hover:text-[color:var(--accent-text)] transition-colors"
                         aria-label={`${project.title} Live demo`}
                       >
-                        <i className="fas fa-external-link-alt" />
+                        <i className=" fas fa-external-link-alt" />
                       </a>
                     )}
                   </div>

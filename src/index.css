@@ -12,6 +12,7 @@
   --light-text: #CCD6F6;
   --accent-text: #7250ec;
   --gradient-button: linear-gradient(135deg, var(--accent-color) 0%, var(--primary-color) 100%);
+  --projectcard: #1b082c;
 }
 
 
@@ -49,7 +50,7 @@ body {
 }
 
 .project-card-custom {
-  background: rgba(28,12,44,0.9);
+  background: var(--projectcard);
   border-radius: 0.9375rem;
   overflow: hidden;
   box-shadow: 0 6px 32px rgba(138,43,226,0.15);
