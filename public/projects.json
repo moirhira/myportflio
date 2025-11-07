@@ -18,15 +18,6 @@
     "live": "#"
   },
   {
-    "id": 3,
-    "image": "media/solong1.png",
-    "category": "Games",
-    "title": "So-long",
-    "description": "so_long — A 2D game built in C using MiniLibX where the player navigates a map to collect items and reach the exit. This project enhanced my skills in graphics rendering, event handling, and game logic implementation.",
-    "github": "https://github.com/moirhira/so_long",
-    "live": "#"
-  },
-  {
     "id": 4,
     "image": "media/philo2.png",
     "category": "Concurrency & Parallelism",
