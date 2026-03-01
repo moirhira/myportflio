@@ -12,17 +12,17 @@ export default function Hero() {
     <section
       id="home"
       className="relative min-h-screen flex items-center overflow-hidden"
-      style={{ background: "linear-gradient(160deg, #0f0a1a 0%, #080510 40%, #0d0524 100%)" }}
+      style={{ background: "var(--hero-bg)" }}
     >
       {/* Background decorations */}
       <div className="bg-dots" />
       <div
         className="glow-orb animate-pulse-slow"
-        style={{ width: 500, height: 500, top: "-10%", right: "-5%", background: "#7c3aed" }}
+        style={{ width: 500, height: 500, top: "-10%", right: "-5%", background: "var(--primary)" }}
       />
       <div
         className="glow-orb animate-pulse-slow"
-        style={{ width: 350, height: 350, bottom: "5%", left: "-5%", background: "#22d3ee", animationDelay: "2s" }}
+        style={{ width: 350, height: 350, bottom: "5%", left: "-5%", background: "var(--cyan)", animationDelay: "2s" }}
       />
 
       <div className="relative z-10 mx-auto w-11/12 max-w-1600 px-6 py-24">
@@ -31,18 +31,21 @@ export default function Hero() {
           <div className="order-2 lg:order-1 text-center lg:text-left max-w-xl mx-auto lg:mx-0">
             <p className="section-label animate-fadeUp">DevOps Engineer</p>
 
-            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-4 animate-fadeUp-d1">
+            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-4 animate-fadeUp-d1"
+                style={{ color: "var(--light-text)" }}>
               Hi, I'm{" "}
               <span className="gradient-heading">Mohamed</span>
             </h1>
 
-            <h2 className="text-lg sm:text-xl text-[color:var(--muted-text)] mb-6 animate-fadeUp-d2 leading-relaxed">
+            <h2 className="text-lg sm:text-xl mb-6 animate-fadeUp-d2 leading-relaxed"
+                style={{ color: "var(--muted-text)" }}>
               DevOps enthusiast & founder of{" "}
-              <span className="text-[color:var(--cyan)] font-semibold">ZeroOps</span>{" "}
+              <span style={{ color: "var(--cyan)", fontWeight: 600 }}>ZeroOps</span>{" "}
               — the DevOps club at 1337 UM6P.
             </h2>
 
-            <p className="text-[color:var(--muted-text)] mb-8 animate-fadeUp-d3 leading-relaxed">
+            <p className="mb-8 animate-fadeUp-d3 leading-relaxed"
+               style={{ color: "var(--muted-text)" }}>
               I design and deploy automated, scalable, and secure infrastructures
               using Docker, Kubernetes, Ansible, and CI/CD pipelines. Currently
               seeking a DevOps internship to build production-ready systems.
@@ -72,7 +75,7 @@ export default function Hero() {
                 <span className="terminal-dot" style={{ background: "#ff5f57" }} />
                 <span className="terminal-dot" style={{ background: "#ffbd2e" }} />
                 <span className="terminal-dot" style={{ background: "#28c840" }} />
-                <span className="ml-3 text-xs text-[color:var(--muted-text)]">
+                <span className="ml-3 text-xs" style={{ color: "var(--muted-text)" }}>
                   terminal — zsh
                 </span>
               </div>
@@ -98,7 +101,7 @@ export default function Hero() {
                   style={{ animationDelay: "3.3s" }}
                 >
                   <span className="terminal-prompt">~/devops $</span>
-                  <span className="animate-blink ml-1 text-[color:var(--cyan)]">▎</span>
+                  <span className="animate-blink ml-1" style={{ color: "var(--cyan)" }}>▎</span>
                 </div>
               </div>
             </div>

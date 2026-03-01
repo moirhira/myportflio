@@ -43,7 +43,11 @@ const categories = [
 
 export default function Skills() {
     return (
-        <section id="skills" className="relative py-28 overflow-hidden" style={{ background: "var(--darker-bg)" }}>
+        <section
+            id="skills"
+            className="relative py-28 overflow-hidden"
+            style={{ background: "var(--darker-bg)", transition: "background 0.3s ease" }}
+        >
             <div className="bg-dots" />
 
             <div className="relative z-10 mx-auto w-11/12 max-w-1600 px-5">
@@ -60,7 +64,7 @@ export default function Skills() {
                                 <div className="skill-icon">
                                     <i className={cat.icon} />
                                 </div>
-                                <h3 className="text-white font-semibold text-sm leading-tight">
+                                <h3 className="font-semibold text-sm leading-tight" style={{ color: "var(--white-text)" }}>
                                     {cat.title}
                                 </h3>
                             </div>
@@ -70,10 +74,13 @@ export default function Skills() {
                                 {cat.skills.map((skill, j) => (
                                     <div
                                         key={j}
-                                        className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-[rgba(124,58,237,0.06)] hover:bg-[rgba(124,58,237,0.14)] transition-colors duration-200"
+                                        className="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors duration-200"
+                                        style={{ background: "var(--skill-bg)" }}
+                                        onMouseEnter={(e) => (e.currentTarget.style.background = "var(--skill-hover-bg)")}
+                                        onMouseLeave={(e) => (e.currentTarget.style.background = "var(--skill-bg)")}
                                     >
-                                        <i className={`${skill.icon} text-lg text-[color:var(--primary-light)]`} />
-                                        <span className="text-sm text-[color:var(--light-text)]">
+                                        <i className={`${skill.icon} text-lg`} style={{ color: "var(--primary-light)" }} />
+                                        <span className="text-sm" style={{ color: "var(--light-text)" }}>
                                             {skill.name}
                                         </span>
                                     </div>

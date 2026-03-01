@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
+import { useTheme } from "../ThemeContext";
 
 export default function Navbar() {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = React.useState(false);
+  const { dark, toggle } = useTheme();
 
   const links = [
     { href: "#home",     label: "Home" },
@@ -20,30 +22,61 @@ export default function Navbar() {
           href="#home"
           className="font-display text-xl font-bold tracking-wide gradient-heading"
         >
-          Mohamed<span className="text-white">.</span>
+          Mohamed<span style={{ color: "var(--light-text)" }}>.</span>
         </a>
 
-        {/* Desktop Links */}
+        {/* Desktop Links + Toggle */}
         <div className="hidden md:flex items-center gap-1">
           {links.map((l) => (
             <a
               key={l.href}
               href={l.href}
-              className="px-4 py-2 text-sm font-medium tracking-wider text-[color:var(--muted-text)] hover:text-white transition-colors duration-200 rounded-lg hover:bg-[rgba(124,58,237,0.1)]"
+              className="px-4 py-2 text-sm font-medium tracking-wider transition-colors duration-200 rounded-lg"
+              style={{ color: "var(--muted-text)" }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "var(--light-text)")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "var(--muted-text)")}
             >
               {l.label}
             </a>
           ))}
+
+          {/* Theme Toggle */}
+          <button
+            onClick={toggle}
+            className={`theme-toggle ml-3 ${!dark ? "is-light" : ""}`}
+            aria-label="Toggle dark/light mode"
+            title={dark ? "Switch to light mode" : "Switch to dark mode"}
+          >
+            <span className="sr-only">{dark ? "Light mode" : "Dark mode"}</span>
+          </button>
+          <span className="ml-2 text-sm" style={{ color: "var(--muted-text)" }}>
+            {dark ? (
+              <i className="fas fa-moon" />
+            ) : (
+              <i className="fas fa-sun" />
+            )}
+          </span>
         </div>
 
-        {/* Mobile Toggle */}
-        <button
-          onClick={() => setOpen(!open)}
-          className="md:hidden text-white text-xl p-2"
-          aria-label="Toggle menu"
-        >
-          <i className={`fas ${open ? "fa-xmark" : "fa-bars"}`} />
-        </button>
+        {/* Mobile: Toggle + Hamburger */}
+        <div className="md:hidden flex items-center gap-3">
+          <button
+            onClick={toggle}
+            className={`theme-toggle ${!dark ? "is-light" : ""}`}
+            aria-label="Toggle dark/light mode"
+          />
+          <span className="text-sm" style={{ color: "var(--muted-text)" }}>
+            {dark ? <i className="fas fa-moon" /> : <i className="fas fa-sun" />}
+          </span>
+          <button
+            onClick={() => setOpen(!open)}
+            className="text-xl p-2"
+            style={{ color: "var(--light-text)" }}
+            aria-label="Toggle menu"
+          >
+            <i className={`fas ${open ? "fa-xmark" : "fa-bars"}`} />
+          </button>
+        </div>
       </div>
 
       {/* Mobile Menu */}
@@ -54,7 +87,8 @@ export default function Navbar() {
               key={l.href}
               href={l.href}
               onClick={() => setOpen(false)}
-              className="px-4 py-3 text-sm font-medium tracking-wider text-[color:var(--muted-text)] hover:text-white transition-colors duration-200 rounded-lg hover:bg-[rgba(124,58,237,0.1)]"
+              className="px-4 py-3 text-sm font-medium tracking-wider transition-colors duration-200 rounded-lg"
+              style={{ color: "var(--muted-text)" }}
             >
               {l.label}
             </a>

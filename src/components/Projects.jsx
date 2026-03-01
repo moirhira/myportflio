@@ -29,7 +29,7 @@ export default function Projects() {
     <section
       id="projects"
       className="relative py-28 overflow-hidden"
-      style={{ background: "var(--section-alt)" }}
+      style={{ background: "var(--section-alt)", transition: "background 0.3s ease" }}
     >
       <div className="bg-dots" />
 
@@ -37,7 +37,7 @@ export default function Projects() {
         <div className="text-center mb-6">
           <p className="section-label">My portfolio</p>
           <h2 className="gradient-heading text-3xl sm:text-4xl mb-4">Recent Work</h2>
-          <p className="text-[color:var(--muted-text)] max-w-2xl mx-auto leading-relaxed">
+          <p className="max-w-2xl mx-auto leading-relaxed" style={{ color: "var(--muted-text)" }}>
             I love turning theory into practice. My projects showcase real DevOps solutions
             I've built — from containerized web applications to fully automated deployment
             pipelines.
@@ -46,7 +46,7 @@ export default function Projects() {
 
         {loading && (
           <div className="flex justify-center py-16">
-            <div className="flex items-center gap-3 text-[color:var(--muted-text)]">
+            <div className="flex items-center gap-3" style={{ color: "var(--muted-text)" }}>
               <i className="fas fa-spinner fa-spin" />
               <span>Loading projects…</span>
             </div>
@@ -61,7 +61,7 @@ export default function Projects() {
 
         {!loading && !error && projects.length === 0 && (
           <div className="flex justify-center py-16">
-            <p className="text-sm text-[color:var(--muted-text)]">No projects found.</p>
+            <p className="text-sm" style={{ color: "var(--muted-text)" }}>No projects found.</p>
           </div>
         )}
 
@@ -69,7 +69,7 @@ export default function Projects() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7 mt-10">
             {projects.map((project) => (
               <article key={project.id} className="project-card-custom flex flex-col">
-                <div className="project-image bg-[#0d0524]">
+                <div className="project-image" style={{ background: "var(--dark-bg)" }}>
                   <img
                     src={project.image}
                     alt={project.title}
@@ -79,13 +79,13 @@ export default function Projects() {
                 </div>
 
                 <div className="p-6 flex flex-col flex-1">
-                  <span className="text-[color:var(--cyan)] text-xs font-semibold uppercase tracking-widest mb-2">
+                  <span className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "var(--cyan)" }}>
                     {project.category}
                   </span>
-                  <h3 className="text-white text-xl font-semibold mb-3">
+                  <h3 className="text-xl font-semibold mb-3" style={{ color: "var(--white-text)" }}>
                     {project.title}
                   </h3>
-                  <p className="text-[color:var(--muted-text)] text-sm leading-relaxed mb-5 flex-1">
+                  <p className="text-sm leading-relaxed mb-5 flex-1" style={{ color: "var(--muted-text)" }}>
                     {project.description}
                   </p>
 
@@ -95,7 +95,10 @@ export default function Projects() {
                         href={project.github}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-2 px-4 py-2 rounded-full bg-[rgba(124,58,237,0.1)] text-sm text-[color:var(--light-text)] hover:bg-[rgba(124,58,237,0.2)] hover:text-white transition-all duration-200"
+                        className="flex items-center gap-2 px-4 py-2 rounded-full text-sm transition-all duration-200"
+                        style={{ background: "var(--code-btn-bg)", color: "var(--light-text)" }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = "var(--code-btn-hover)"; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = "var(--code-btn-bg)"; }}
                         aria-label={`${project.title} GitHub`}
                       >
                         <i className="fab fa-github" />
@@ -107,7 +110,10 @@ export default function Projects() {
                         href={project.live}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-2 px-4 py-2 rounded-full bg-[rgba(34,211,238,0.08)] text-sm text-[color:var(--cyan)] hover:bg-[rgba(34,211,238,0.15)] transition-all duration-200"
+                        className="flex items-center gap-2 px-4 py-2 rounded-full text-sm transition-all duration-200"
+                        style={{ background: "var(--live-btn-bg)", color: "var(--cyan)" }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = "var(--live-btn-hover)"; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = "var(--live-btn-bg)"; }}
                         aria-label={`${project.title} Live`}
                       >
                         <i className="fas fa-external-link-alt" />
