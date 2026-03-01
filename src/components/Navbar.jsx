@@ -2,44 +2,53 @@ import React from "react";
 import { useTheme } from "../ThemeContext";
 import { useLang } from "../LanguageContext";
 
+const scrollTo = (id, closeMobile) => {
+  // When inside the portfolio page, scroll to the section
+  const el = document.getElementById(id);
+  if (el) {
+    el.scrollIntoView({ behavior: "smooth" });
+  }
+  closeMobile && closeMobile();
+};
+
 export default function Navbar() {
   const [open, setOpen] = React.useState(false);
   const { dark, toggle } = useTheme();
   const { lang, t, toggleLang } = useLang();
 
   const links = [
-    { href: "#home", label: t.nav.home },
-    { href: "#about", label: t.nav.about },
-    { href: "#skills", label: t.nav.skills },
-    { href: "#projects", label: t.nav.projects },
-    { href: "#zeroops", label: t.nav.zeroops },
-    { href: "#contact", label: t.nav.contact },
+    { id: "home", label: t.nav.home },
+    { id: "about", label: t.nav.about },
+    { id: "skills", label: t.nav.skills },
+    { id: "projects", label: t.nav.projects },
+    { id: "zeroops", label: t.nav.zeroops },
+    { id: "contact", label: t.nav.contact },
   ];
 
   return (
     <nav className="fixed top-0 left-0 w-full z-50 navbar-backdrop py-4">
       <div className="mx-auto w-11/12 max-w-1600 px-5 flex items-center justify-between">
         {/* Brand */}
-        <a
-          href="#home"
-          className="font-display text-xl font-bold tracking-wide gradient-heading"
+        <button
+          onClick={() => scrollTo("home")}
+          className="font-display text-xl font-bold tracking-wide gradient-heading bg-transparent border-none cursor-pointer"
         >
           Mohamed<span style={{ color: "var(--light-text)" }}>.</span>
-        </a>
+        </button>
 
         {/* Desktop Links + Controls */}
         <div className="hidden md:flex items-center gap-1">
           {links.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              className="px-4 py-2 text-sm font-medium tracking-wider transition-colors duration-200 rounded-lg"
+            <button
+              key={l.id}
+              onClick={() => scrollTo(l.id)}
+              className="px-4 py-2 text-sm font-medium tracking-wider transition-colors duration-200 rounded-lg bg-transparent border-none cursor-pointer"
               style={{ color: "var(--muted-text)" }}
               onMouseEnter={(e) => (e.currentTarget.style.color = "var(--light-text)")}
               onMouseLeave={(e) => (e.currentTarget.style.color = "var(--muted-text)")}
             >
               {l.label}
-            </a>
+            </button>
           ))}
 
           {/* Language Switcher */}
@@ -110,15 +119,14 @@ export default function Navbar() {
       {open && (
         <div className="md:hidden mt-2 mx-auto w-11/12 max-w-1600 px-5 pb-4 flex flex-col gap-1">
           {links.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              onClick={() => setOpen(false)}
-              className="px-4 py-3 text-sm font-medium tracking-wider transition-colors duration-200 rounded-lg"
+            <button
+              key={l.id}
+              onClick={() => scrollTo(l.id, () => setOpen(false))}
+              className="px-4 py-3 text-sm font-medium tracking-wider transition-colors duration-200 rounded-lg bg-transparent border-none cursor-pointer text-left"
               style={{ color: "var(--muted-text)" }}
             >
               {l.label}
-            </a>
+            </button>
           ))}
         </div>
       )}

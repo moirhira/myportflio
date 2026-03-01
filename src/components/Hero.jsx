@@ -66,10 +66,13 @@ export default function Hero() {
                 <i className="fas fa-file-alt" />
                 {t.hero.resumeBtn}
               </a>
-              <a href="#contact" className="btn-outline">
+              <button
+                onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
+                className="btn-outline"
+              >
                 <i className="fas fa-paper-plane" />
                 {t.hero.contactBtn}
-              </a>
+              </button>
             </div>
           </div>
 

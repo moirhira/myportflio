@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLang } from "../LanguageContext";
+import { getProjects } from "../admin/dataStore";
 
 export default function Projects() {
   const { t } = useLang();
@@ -11,9 +12,7 @@ export default function Projects() {
     let mounted = true;
     (async () => {
       try {
-        const res = await fetch("/projects.json");
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
+        const data = await getProjects();
         if (mounted) setProjects(data);
       } catch (err) {
         console.error("Error fetching projects:", err);
