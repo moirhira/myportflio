@@ -2,16 +2,16 @@
 // Persists portfolio data in localStorage with fallbacks to defaults.
 
 const PROJECTS_KEY = "portfolio_projects";
-const PROFILE_KEY  = "portfolio_profile";
+const PROFILE_KEY = "portfolio_profile";
 
 // Default profile (matches the About component)
 const defaultProfile = {
   name: "Mohamed",
   school: "1337 UM6P",
   stats: [
-    { value: "3+",   labelEn: "Years of Coding",  labelFr: "Années de Code" },
-    { value: "10+",  labelEn: "Projects Built",   labelFr: "Projets Réalisés" },
-    { value: "1337", labelEn: "UM6P Student",     labelFr: "Étudiant UM6P" },
+    { value: "3+", labelEn: "Years of Coding", labelFr: "Années de Code" },
+    { value: "10+", labelEn: "Projects Built", labelFr: "Projets Réalisés" },
+    { value: "1337", labelEn: "UM6P Student", labelFr: "Étudiant UM6P" },
   ],
 };
 
@@ -157,3 +157,20 @@ export async function verifyPin(pin) {
 export function clearPin() {
   localStorage.removeItem(PIN_KEY);
 }
+
+// ── Resume URL ─────────────────────────────────────────
+
+const RESUME_KEY = "portfolio_resume_url";
+
+export function getResumeUrl() {
+  return localStorage.getItem(RESUME_KEY) || null;
+}
+
+export function setResumeUrl(url) {
+  if (url && url.trim()) {
+    localStorage.setItem(RESUME_KEY, url.trim());
+  } else {
+    localStorage.removeItem(RESUME_KEY);
+  }
+}
+

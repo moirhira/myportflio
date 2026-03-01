@@ -1,8 +1,11 @@
 import React from "react";
 import { useLang } from "../LanguageContext";
+import { getResumeUrl } from "../admin/dataStore";
 
 export default function Hero() {
   const { t } = useLang();
+  const resumeHref = getResumeUrl() || "media/myresume.pdf";
+
 
   const terminalLines = [
     { prompt: "~/devops $", command: "docker compose up -d", delay: 0 },
@@ -58,7 +61,7 @@ export default function Hero() {
 
             <div className="flex flex-wrap gap-4 justify-center lg:justify-start animate-fadeUp-d4">
               <a
-                href="media/myresume.pdf"
+                href={resumeHref}
                 target="_blank"
                 rel="noreferrer"
                 className="btn-primary"

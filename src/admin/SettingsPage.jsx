@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { exportAll, importAll, resetAll, setPin } from "./dataStore";
+import { exportAll, importAll, resetAll, setPin, getResumeUrl, setResumeUrl } from "./dataStore";
 
 export default function SettingsPage() {
   const [newPin, setNewPin] = useState("");
@@ -8,6 +8,8 @@ export default function SettingsPage() {
   const [importMsg, setImportMsg] = useState(null);
   const [confirmReset, setConfirmReset] = useState(false);
   const fileRef = useRef();
+  const [resumeUrl, setResumeUrlState] = useState(getResumeUrl() || "");
+  const [resumeMsg, setResumeMsg] = useState(null);
 
   // ── PIN Change ──
   const handlePinChange = async () => {
@@ -39,9 +41,7 @@ export default function SettingsPage() {
   };
 
   // ── Import ──
-  const handleImport = () => {
-    fileRef.current?.click();
-  };
+  const handleImport = () => fileRef.current?.click();
 
   const onFileSelected = (e) => {
     const file = e.target.files?.[0];
@@ -50,7 +50,7 @@ export default function SettingsPage() {
     reader.onload = (ev) => {
       try {
         importAll(ev.target.result);
-        setImportMsg({ type: "success", text: "Data imported successfully! Refresh to see changes." });
+        setImportMsg({ type: "success", text: "Data imported! Refresh to see changes." });
       } catch {
         setImportMsg({ type: "error", text: "Invalid JSON file" });
       }
@@ -65,6 +65,19 @@ export default function SettingsPage() {
     resetAll();
     setConfirmReset(false);
     window.location.reload();
+  };
+
+  // ── Resume URL ──
+  const handleSaveResume = () => {
+    setResumeUrl(resumeUrl);
+    setResumeMsg({ type: "success", text: "Resume URL saved! The button on the site now links here." });
+    setTimeout(() => setResumeMsg(null), 4000);
+  };
+  const handleClearResume = () => {
+    setResumeUrl("");
+    setResumeUrlState("");
+    setResumeMsg({ type: "success", text: "Cleared — site will use the default resume file." });
+    setTimeout(() => setResumeMsg(null), 3000);
   };
 
   return (
@@ -82,14 +95,12 @@ export default function SettingsPage() {
           </h2>
           <div className="flex flex-col gap-3">
             <div>
-              <label className="block mb-1.5 text-xs font-medium uppercase tracking-wider"
-                style={{ color: "var(--muted-text)" }}>New PIN</label>
+              <label className="block mb-1.5 text-xs font-medium uppercase tracking-wider" style={{ color: "var(--muted-text)" }}>New PIN</label>
               <input type="password" value={newPin} onChange={(e) => setNewPin(e.target.value)}
                 className="admin-input" placeholder="••••••" />
             </div>
             <div>
-              <label className="block mb-1.5 text-xs font-medium uppercase tracking-wider"
-                style={{ color: "var(--muted-text)" }}>Confirm PIN</label>
+              <label className="block mb-1.5 text-xs font-medium uppercase tracking-wider" style={{ color: "var(--muted-text)" }}>Confirm PIN</label>
               <input type="password" value={confirmPin} onChange={(e) => setConfirmPin(e.target.value)}
                 className="admin-input" placeholder="••••••" />
             </div>
@@ -105,8 +116,51 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        {/* Data Management */}
+        {/* Resume URL */}
         <div className="admin-card p-6">
+          <h2 className="text-sm font-semibold uppercase tracking-wider mb-1" style={{ color: "var(--accent-text)" }}>
+            <i className="fas fa-file-pdf mr-2" />Resume Link
+          </h2>
+          <p className="text-xs mb-4" style={{ color: "var(--muted-text)" }}>
+            Paste a direct link to your resume (Google Drive, Dropbox, etc.). Leave blank to use the default file.
+          </p>
+          <div className="flex flex-col gap-3">
+            <input
+              value={resumeUrl}
+              onChange={(e) => setResumeUrlState(e.target.value)}
+              placeholder="https://drive.google.com/file/d/…/view?usp=sharing"
+              className="admin-input text-sm"
+            />
+            {resumeMsg && (
+              <p className="text-xs" style={{ color: resumeMsg.type === "error" ? "#ef4444" : "#22c55e" }}>
+                <i className={`fas ${resumeMsg.type === "error" ? "fa-exclamation-circle" : "fa-check-circle"} mr-1`} />
+                {resumeMsg.text}
+              </p>
+            )}
+            <div className="flex gap-2">
+              <button onClick={handleSaveResume} className="btn-primary text-sm">
+                <i className="fas fa-save" /> Save URL
+              </button>
+              {getResumeUrl() && (
+                <button onClick={handleClearResume}
+                  className="px-4 py-2 rounded-lg text-sm font-medium"
+                  style={{ background: "var(--glass)", color: "var(--muted-text)", border: "1px solid var(--glass-border)" }}>
+                  <i className="fas fa-xmark mr-1" /> Use Default
+                </button>
+              )}
+            </div>
+            <p className="text-xs" style={{ color: "var(--muted-text)" }}>
+              <i className="fas fa-info-circle mr-1" />
+              {getResumeUrl()
+                ? <span>Currently using: <span style={{ color: "var(--cyan)" }}>custom URL</span></span>
+                : <span>Currently using: <span style={{ color: "var(--cyan)" }}>media/myresume.pdf</span></span>
+              }
+            </p>
+          </div>
+        </div>
+
+        {/* Data Management */}
+        <div className="admin-card p-6 lg:col-span-2">
           <h2 className="text-sm font-semibold uppercase tracking-wider mb-4" style={{ color: "var(--accent-text)" }}>
             <i className="fas fa-database mr-2" />Data Management
           </h2>
@@ -115,8 +169,8 @@ export default function SettingsPage() {
             <div className="p-4 rounded-xl flex items-center justify-between"
               style={{ background: "var(--glass)", border: "1px solid var(--glass-border)" }}>
               <div>
-                <p className="text-sm font-medium" style={{ color: "var(--white-text)" }}>Export Data</p>
-                <p className="text-xs" style={{ color: "var(--muted-text)" }}>Download projects & profile as JSON</p>
+                <p className="text-sm font-medium" style={{ color: "var(--white-text)" }}>Export Backup</p>
+                <p className="text-xs" style={{ color: "var(--muted-text)" }}>Download projects & profile as JSON backup</p>
               </div>
               <button onClick={handleExport} className="admin-btn-sm px-4 py-2" style={{ color: "var(--cyan)" }}>
                 <i className="fas fa-download mr-1" /> Export

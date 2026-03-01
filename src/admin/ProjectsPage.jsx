@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import {
-  getProjects, addProject, updateProject, deleteProject, reorderProject,
+  getProjects, addProject, updateProject, deleteProject, reorderProject, getProjectsSync,
 } from "./dataStore";
 
 const emptyProject = {
@@ -68,8 +68,40 @@ export default function ProjectsPage() {
     setForm((prev) => ({ ...prev, [key]: val }));
   };
 
+  // Export current projects as projects.json (ready to commit)
+  const handleExportProjectsJson = () => {
+    const data = JSON.stringify(getProjectsSync(), null, 2);
+    const blob = new Blob([data], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "projects.json";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div>
+      {/* ── Deploy workflow banner ── */}
+      <div className="mb-5 p-4 rounded-xl flex flex-col sm:flex-row sm:items-center gap-3"
+        style={{ background: "rgba(139,92,246,0.08)", border: "1px solid rgba(139,92,246,0.25)" }}>
+        <div className="flex-1">
+          <p className="text-sm font-semibold mb-0.5" style={{ color: "var(--accent-text)" }}>
+            <i className="fas fa-circle-info mr-2" />How to make project changes go live
+          </p>
+          <p className="text-xs" style={{ color: "var(--muted-text)" }}>
+            Changes are saved locally in your browser. To publish them for all visitors:&nbsp;
+            <strong style={{ color: "var(--light-text)" }}>1)</strong> Click "Export projects.json" →&nbsp;
+            <strong style={{ color: "var(--light-text)" }}>2)</strong> Replace <code style={{ color: "var(--cyan)" }}>public/projects.json</code> in your repo →&nbsp;
+            <strong style={{ color: "var(--light-text)" }}>3)</strong> <code style={{ color: "var(--cyan)" }}>git push</code> → Vercel redeploys in ~1 min ✅
+          </p>
+        </div>
+        <button onClick={handleExportProjectsJson}
+          className="btn-primary text-sm whitespace-nowrap flex-shrink-0">
+          <i className="fas fa-file-export" /> Export projects.json
+        </button>
+      </div>
+
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <div>
           <h1 className="text-2xl font-bold" style={{ color: "var(--white-text)" }}>Projects</h1>
