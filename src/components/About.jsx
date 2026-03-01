@@ -1,62 +1,67 @@
 import React from "react";
 
 export default function About() {
-  const icons = [
-    {
-      id: 0,
-      name: "fa-html5"
-    },
-    {
-      id: 1,
-      name: "fa-css3-alt"
-    },
-    {
-      id: 2,
-      name: "fa-js"
-    },
+  const stats = [
+    { value: "3+", label: "Years of Coding" },
+    { value: "10+", label: "Projects Built" },
+    { value: "1337", label: "UM6P Student" },
+  ];
 
-    {
-      id: 3,
-      name: "fa-node"
-    },
-    {
-      id: 4,
-      name: "fa-react"
-    },
-    {
-      id: 5,
-      name: "fa-git"
-    },
-    {
-      id: 6,
-      name: "fa-docker"
-    },
-    {
-      id: 7,
-      name: "fa-linux"
-    },
-  ]
   return (
-    <section id="about" className="about bg-[color:var(--darker-bg)] text-center py-36">
-      <div className="mx-auto w-11/12 max-w-1600 px-5">
-        <h2 className="gradient-heading text-3xl mb-6">About</h2>
-        <p className="mx-auto max-w-3xl mb-8 opacity-90 leading-8 tracking-wide ">
-          I'm a software engineering student at 1337 UM6P with a Bac+2 in full-stack development (React &amp;
-          Laravel). Over the past 3 years, I've built web applications with clean code, strong UI/UX, and
-          efficient functionality—delivering freelance projects that solved real client needs. While I've
-          specialized more in frontend development, I'm now diving into DevOps—learning containerization,
-          automation, and cloud deployment. My goal is to grow into a well-rounded engineer who can both craft
-          seamless user experiences and ensure scalable, reliable infrastructure behind the scenes.
-        </p>
+    <section
+      id="about"
+      className="relative py-28 overflow-hidden"
+      style={{ background: "var(--section-alt)" }}
+    >
+      <div className="bg-dots" />
 
-        <h3 className="gradient-heading text-2xl mb-6 pt-20">Skills</h3>
+      <div className="relative z-10 mx-auto w-11/12 max-w-1600 px-5">
+        <div className="text-center mb-14">
+          <p className="section-label">Get to know me</p>
+          <h2 className="gradient-heading text-3xl sm:text-4xl">About Me</h2>
+        </div>
 
-        <div className="social-icons flex flex-wrap justify-center gap-4 max-w-[350px] mx-auto">
-          {icons.map((icon) => {
-            return (
-              <i icon={icon.id} className={`fa-brands ${icon.name} w-10 h-10 flex items-center justify-center rounded-full bg-[rgba(255,255,255,0.06)]`}></i>
-            )
-          })}
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 items-start">
+          {/* Text — 3 cols */}
+          <div className="lg:col-span-3 space-y-5">
+            <p className="text-[color:var(--muted-text)] leading-relaxed text-lg">
+              I am a software engineering student at{" "}
+              <span className="text-white font-semibold">1337 UM6P</span> with a
+              strong focus on DevOps, cloud engineering, and automation.
+            </p>
+            <p className="text-[color:var(--muted-text)] leading-relaxed text-lg">
+              As the founder of{" "}
+              <span className="text-[color:var(--cyan)] font-semibold">ZeroOps</span>,
+              I lead initiatives that help students explore modern infrastructure
+              practices, containerized deployments, and CI/CD workflows.
+            </p>
+            <p className="text-[color:var(--muted-text)] leading-relaxed text-lg">
+              My hands-on experience includes building multi-container architectures
+              with Docker Compose, deploying applications on Kubernetes clusters,
+              managing secrets and environment variables securely, and automating
+              Linux server provisioning with Ansible.
+            </p>
+            <p className="text-[color:var(--muted-text)] leading-relaxed text-lg">
+              I enjoy creating scalable, maintainable, and secure systems, mentoring
+              others, and exploring innovative DevOps solutions. I'm currently
+              seeking internship opportunities where I can apply my skills to
+              real-world infrastructure challenges.
+            </p>
+          </div>
+
+          {/* Stats — 2 cols */}
+          <div className="lg:col-span-2 flex flex-col gap-5">
+            {stats.map((s, i) => (
+              <div key={i} className="glass-card p-6 text-center">
+                <p className="font-display text-3xl font-bold gradient-heading mb-1">
+                  {s.value}
+                </p>
+                <p className="text-sm text-[color:var(--muted-text)] tracking-wide">
+                  {s.label}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
