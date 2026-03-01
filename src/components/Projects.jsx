@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
+import { useLang } from "../LanguageContext";
 
 export default function Projects() {
+  const { t } = useLang();
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     let mounted = true;
-
     (async () => {
       try {
         const res = await fetch("/projects.json");
@@ -21,7 +22,6 @@ export default function Projects() {
         if (mounted) setLoading(false);
       }
     })();
-
     return () => { mounted = false; };
   }, []);
 
@@ -35,12 +35,10 @@ export default function Projects() {
 
       <div className="relative z-10 mx-auto w-11/12 max-w-1600 px-5">
         <div className="text-center mb-6">
-          <p className="section-label">My portfolio</p>
-          <h2 className="gradient-heading text-3xl sm:text-4xl mb-4">Recent Work</h2>
+          <p className="section-label">{t.projects.label}</p>
+          <h2 className="gradient-heading text-3xl sm:text-4xl mb-4">{t.projects.heading}</h2>
           <p className="max-w-2xl mx-auto leading-relaxed" style={{ color: "var(--muted-text)" }}>
-            I love turning theory into practice. My projects showcase real DevOps solutions
-            I've built — from containerized web applications to fully automated deployment
-            pipelines.
+            {t.projects.description}
           </p>
         </div>
 
@@ -48,7 +46,7 @@ export default function Projects() {
           <div className="flex justify-center py-16">
             <div className="flex items-center gap-3" style={{ color: "var(--muted-text)" }}>
               <i className="fas fa-spinner fa-spin" />
-              <span>Loading projects…</span>
+              <span>{t.projects.loading}</span>
             </div>
           </div>
         )}
@@ -61,7 +59,7 @@ export default function Projects() {
 
         {!loading && !error && projects.length === 0 && (
           <div className="flex justify-center py-16">
-            <p className="text-sm" style={{ color: "var(--muted-text)" }}>No projects found.</p>
+            <p className="text-sm" style={{ color: "var(--muted-text)" }}>{t.projects.noProjects}</p>
           </div>
         )}
 
@@ -77,7 +75,6 @@ export default function Projects() {
                     loading="lazy"
                   />
                 </div>
-
                 <div className="p-6 flex flex-col flex-1">
                   <span className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "var(--cyan)" }}>
                     {project.category}
@@ -88,7 +85,6 @@ export default function Projects() {
                   <p className="text-sm leading-relaxed mb-5 flex-1" style={{ color: "var(--muted-text)" }}>
                     {project.description}
                   </p>
-
                   <div className="flex items-center gap-3 mt-auto">
                     {project.github && (
                       <a
@@ -99,10 +95,9 @@ export default function Projects() {
                         style={{ background: "var(--code-btn-bg)", color: "var(--light-text)" }}
                         onMouseEnter={(e) => { e.currentTarget.style.background = "var(--code-btn-hover)"; }}
                         onMouseLeave={(e) => { e.currentTarget.style.background = "var(--code-btn-bg)"; }}
-                        aria-label={`${project.title} GitHub`}
                       >
                         <i className="fab fa-github" />
-                        Code
+                        {t.projects.code}
                       </a>
                     )}
                     {project.live && project.live !== "#" && (
@@ -114,10 +109,9 @@ export default function Projects() {
                         style={{ background: "var(--live-btn-bg)", color: "var(--cyan)" }}
                         onMouseEnter={(e) => { e.currentTarget.style.background = "var(--live-btn-hover)"; }}
                         onMouseLeave={(e) => { e.currentTarget.style.background = "var(--live-btn-bg)"; }}
-                        aria-label={`${project.title} Live`}
                       >
                         <i className="fas fa-external-link-alt" />
-                        Live
+                        {t.projects.live}
                       </a>
                     )}
                   </div>

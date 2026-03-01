@@ -1,6 +1,9 @@
 import React from "react";
+import { useLang } from "../LanguageContext";
 
 export default function Hero() {
+  const { t } = useLang();
+
   const terminalLines = [
     { prompt: "~/devops $", command: "docker compose up -d", delay: 0 },
     { prompt: "~/devops $", command: "kubectl apply -f deployment.yaml", delay: 1 },
@@ -14,7 +17,6 @@ export default function Hero() {
       className="relative min-h-screen flex items-center overflow-hidden"
       style={{ background: "var(--hero-bg)" }}
     >
-      {/* Background decorations */}
       <div className="bg-dots" />
       <div
         className="glow-orb animate-pulse-slow"
@@ -27,28 +29,31 @@ export default function Hero() {
 
       <div className="relative z-10 mx-auto w-11/12 max-w-1600 px-6 py-24">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Text */}
           <div className="order-2 lg:order-1 text-center lg:text-left max-w-xl mx-auto lg:mx-0">
-            <p className="section-label animate-fadeUp">DevOps Engineer</p>
+            <p className="section-label animate-fadeUp">{t.hero.label}</p>
 
-            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-4 animate-fadeUp-d1"
-                style={{ color: "var(--light-text)" }}>
-              Hi, I'm{" "}
-              <span className="gradient-heading">Mohamed</span>
+            <h1
+              className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-4 animate-fadeUp-d1"
+              style={{ color: "var(--light-text)" }}
+            >
+              {t.hero.greeting}{" "}
+              <span className="gradient-heading">{t.hero.name}</span>
             </h1>
 
-            <h2 className="text-lg sm:text-xl mb-6 animate-fadeUp-d2 leading-relaxed"
-                style={{ color: "var(--muted-text)" }}>
-              DevOps enthusiast & founder of{" "}
+            <h2
+              className="text-lg sm:text-xl mb-6 animate-fadeUp-d2 leading-relaxed"
+              style={{ color: "var(--muted-text)" }}
+            >
+              {t.hero.subtitle1}{" "}
               <span style={{ color: "var(--cyan)", fontWeight: 600 }}>ZeroOps</span>{" "}
-              — the DevOps club at 1337 UM6P.
+              {t.hero.subtitle2}
             </h2>
 
-            <p className="mb-8 animate-fadeUp-d3 leading-relaxed"
-               style={{ color: "var(--muted-text)" }}>
-              I design and deploy automated, scalable, and secure infrastructures
-              using Docker, Kubernetes, Ansible, and CI/CD pipelines. Currently
-              seeking a DevOps internship to build production-ready systems.
+            <p
+              className="mb-8 animate-fadeUp-d3 leading-relaxed"
+              style={{ color: "var(--muted-text)" }}
+            >
+              {t.hero.description}
             </p>
 
             <div className="flex flex-wrap gap-4 justify-center lg:justify-start animate-fadeUp-d4">
@@ -59,16 +64,15 @@ export default function Hero() {
                 className="btn-primary"
               >
                 <i className="fas fa-file-alt" />
-                My Resume
+                {t.hero.resumeBtn}
               </a>
               <a href="#contact" className="btn-outline">
                 <i className="fas fa-paper-plane" />
-                Get in Touch
+                {t.hero.contactBtn}
               </a>
             </div>
           </div>
 
-          {/* Terminal */}
           <div className="order-1 lg:order-2 flex justify-center lg:justify-end animate-fadeUp-d2">
             <div className="terminal-block w-full max-w-md animate-float">
               <div className="terminal-header">
@@ -96,10 +100,7 @@ export default function Hero() {
                     )}
                   </div>
                 ))}
-                <div
-                  className="terminal-line mt-2"
-                  style={{ animationDelay: "3.3s" }}
-                >
+                <div className="terminal-line mt-2" style={{ animationDelay: "3.3s" }}>
                   <span className="terminal-prompt">~/devops $</span>
                   <span className="animate-blink ml-1" style={{ color: "var(--cyan)" }}>▎</span>
                 </div>

@@ -1,18 +1,18 @@
 import React from "react";
+import { useLang } from "../LanguageContext";
 
 export default function Footer() {
+  const { t } = useLang();
+
   return (
     <footer className="relative py-10" style={{ background: "var(--darker-bg)", transition: "background 0.3s ease" }}>
-      {/* Top divider */}
       <div className="section-divider mb-10" />
 
       <div className="mx-auto w-11/12 max-w-1600 px-5 flex flex-col items-center gap-6">
-        {/* Tagline */}
         <p className="text-sm italic text-center" style={{ color: "var(--muted-text)" }}>
-          "Always exploring new DevOps challenges and cloud technologies."
+          {t.footer.quote}
         </p>
 
-        {/* Social Icons */}
         <div className="flex items-center gap-5">
           <a
             target="_blank"
@@ -52,9 +52,8 @@ export default function Footer() {
           </a>
         </div>
 
-        {/* Copyright */}
         <p className="text-xs opacity-60" style={{ color: "var(--muted-text)" }}>
-          &copy; {new Date().getFullYear()} Mohamed Irhirallah. All rights reserved.
+          &copy; {new Date().getFullYear()} {t.footer.copyright}
         </p>
       </div>
     </footer>

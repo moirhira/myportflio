@@ -1,17 +1,19 @@
 import React from "react";
 import { useTheme } from "../ThemeContext";
+import { useLang } from "../LanguageContext";
 
 export default function Navbar() {
   const [open, setOpen] = React.useState(false);
   const { dark, toggle } = useTheme();
+  const { lang, t, toggleLang } = useLang();
 
   const links = [
-    { href: "#home",     label: "Home" },
-    { href: "#about",    label: "About" },
-    { href: "#skills",   label: "Skills" },
-    { href: "#projects", label: "Projects" },
-    { href: "#zeroops",  label: "ZeroOps" },
-    { href: "#contact",  label: "Contact" },
+    { href: "#home", label: t.nav.home },
+    { href: "#about", label: t.nav.about },
+    { href: "#skills", label: t.nav.skills },
+    { href: "#projects", label: t.nav.projects },
+    { href: "#zeroops", label: t.nav.zeroops },
+    { href: "#contact", label: t.nav.contact },
   ];
 
   return (
@@ -25,7 +27,7 @@ export default function Navbar() {
           Mohamed<span style={{ color: "var(--light-text)" }}>.</span>
         </a>
 
-        {/* Desktop Links + Toggle */}
+        {/* Desktop Links + Controls */}
         <div className="hidden md:flex items-center gap-1">
           {links.map((l) => (
             <a
@@ -40,26 +42,51 @@ export default function Navbar() {
             </a>
           ))}
 
+          {/* Language Switcher */}
+          <button
+            onClick={toggleLang}
+            className="ml-2 px-3 py-1.5 rounded-full text-xs font-bold tracking-wider transition-all duration-200"
+            style={{
+              background: "var(--glass)",
+              border: "1px solid var(--glass-border)",
+              color: "var(--accent-text)",
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = "var(--social-hover)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = "var(--glass)"; }}
+            aria-label="Switch language"
+            title={lang === "en" ? "Passer en français" : "Switch to English"}
+          >
+            {lang === "en" ? "FR" : "EN"}
+          </button>
+
           {/* Theme Toggle */}
           <button
             onClick={toggle}
-            className={`theme-toggle ml-3 ${!dark ? "is-light" : ""}`}
+            className={`theme-toggle ml-2 ${!dark ? "is-light" : ""}`}
             aria-label="Toggle dark/light mode"
             title={dark ? "Switch to light mode" : "Switch to dark mode"}
           >
             <span className="sr-only">{dark ? "Light mode" : "Dark mode"}</span>
           </button>
-          <span className="ml-2 text-sm" style={{ color: "var(--muted-text)" }}>
-            {dark ? (
-              <i className="fas fa-moon" />
-            ) : (
-              <i className="fas fa-sun" />
-            )}
+          <span className="ml-1 text-sm" style={{ color: "var(--muted-text)" }}>
+            {dark ? <i className="fas fa-moon" /> : <i className="fas fa-sun" />}
           </span>
         </div>
 
-        {/* Mobile: Toggle + Hamburger */}
-        <div className="md:hidden flex items-center gap-3">
+        {/* Mobile: Controls + Hamburger */}
+        <div className="md:hidden flex items-center gap-2">
+          <button
+            onClick={toggleLang}
+            className="px-2.5 py-1 rounded-full text-xs font-bold tracking-wider"
+            style={{
+              background: "var(--glass)",
+              border: "1px solid var(--glass-border)",
+              color: "var(--accent-text)",
+            }}
+            aria-label="Switch language"
+          >
+            {lang === "en" ? "FR" : "EN"}
+          </button>
           <button
             onClick={toggle}
             className={`theme-toggle ${!dark ? "is-light" : ""}`}
