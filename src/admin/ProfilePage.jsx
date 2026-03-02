@@ -4,12 +4,17 @@ import { getProfile, setProfile } from "./dataStore";
 export default function ProfilePage() {
     const [profile, setLocal] = useState(null);
     const [saved, setSaved] = useState(false);
+    const [saving, setSaving] = useState(false);
 
     useEffect(() => {
-        setLocal(getProfile());
+        getProfile().then(setLocal);
     }, []);
 
-    if (!profile) return null;
+    if (!profile) return (
+        <div className="flex items-center justify-center py-24">
+            <i className="fas fa-spinner fa-spin text-2xl" style={{ color: "var(--accent-text)" }} />
+        </div>
+    );
 
     const handleField = (key, val) => {
         setLocal((prev) => ({ ...prev, [key]: val }));
@@ -41,14 +46,16 @@ export default function ProfilePage() {
         setSaved(false);
     };
 
-    const save = () => {
-        setProfile(profile);
+    const save = async () => {
+        setSaving(true);
+        await setProfile(profile);
+        setSaving(false);
         setSaved(true);
         setTimeout(() => setSaved(false), 2500);
     };
 
     const reset = () => {
-        setLocal(getProfile());
+        getProfile().then(setLocal);
         setSaved(false);
     };
 
@@ -154,8 +161,10 @@ export default function ProfilePage() {
 
             {/* Actions */}
             <div className="flex items-center gap-3 mt-6">
-                <button onClick={save} className="btn-primary text-sm">
-                    <i className="fas fa-check" /> Save Changes
+                <button onClick={save} disabled={saving} className="btn-primary text-sm">
+                    {saving
+                        ? <><i className="fas fa-spinner fa-spin" /> Saving…</>
+                        : <><i className="fas fa-check" /> Save Changes</>}
                 </button>
                 <button onClick={reset} className="px-5 py-2 rounded-full text-sm font-medium"
                     style={{ background: "var(--glass)", color: "var(--light-text)" }}>
@@ -163,7 +172,7 @@ export default function ProfilePage() {
                 </button>
                 {saved && (
                     <span className="text-sm ml-2" style={{ color: "#22c55e" }}>
-                        <i className="fas fa-check-circle mr-1" /> Saved!
+                        <i className="fas fa-check-circle mr-1" /> Saved to database!
                     </span>
                 )}
             </div>

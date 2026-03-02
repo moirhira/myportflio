@@ -1,10 +1,16 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useLang } from "../LanguageContext";
 import { getResumeUrl } from "../admin/dataStore";
 
 export default function Hero() {
   const { t } = useLang();
-  const resumeHref = getResumeUrl() || "media/myresume.pdf";
+  const [resumeHref, setResumeHref] = useState("media/myresume.pdf");
+
+  useEffect(() => {
+    getResumeUrl().then((url) => {
+      if (url) setResumeHref(url);
+    });
+  }, []);
 
 
   const terminalLines = [

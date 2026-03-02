@@ -1,133 +1,145 @@
-// ── Data Store ─────────────────────────────────────────
-// Persists portfolio data in localStorage with fallbacks to defaults.
+// ── Data Store (Supabase) ────────────────────────────────────────────────────
+// All portfolio data is stored in Supabase PostgreSQL.
+// The admin PIN is the only thing kept in localStorage (it's device-specific).
 
-const PROJECTS_KEY = "portfolio_projects";
-const PROFILE_KEY = "portfolio_profile";
+import { supabase } from "./supabase";
 
-// Default profile (matches the About component)
+// ── Default profile fallback ───────────────────────────────────────────────
 const defaultProfile = {
   name: "Mohamed",
   school: "1337 UM6P",
   stats: [
-    { value: "3+", labelEn: "Years of Coding", labelFr: "Années de Code" },
-    { value: "10+", labelEn: "Projects Built", labelFr: "Projets Réalisés" },
-    { value: "1337", labelEn: "UM6P Student", labelFr: "Étudiant UM6P" },
+    { value: "3+",   labelEn: "Years of Coding",  labelFr: "Années de Code" },
+    { value: "10+",  labelEn: "Projects Built",   labelFr: "Projets Réalisés" },
+    { value: "1337", labelEn: "UM6P Student",     labelFr: "Étudiant UM6P" },
   ],
 };
 
-// ── Projects ───────────────────────────────────────────
-
-let projectsCache = null;
+// ── Projects ───────────────────────────────────────────────────────────────
 
 export async function getProjects() {
-  // Check localStorage first
-  const stored = localStorage.getItem(PROJECTS_KEY);
-  if (stored) {
-    try {
-      projectsCache = JSON.parse(stored);
-      return projectsCache;
-    } catch { /* fall through */ }
-  }
-  // Fallback: fetch from static file
-  try {
-    const res = await fetch("/projects.json");
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    projectsCache = data;
-    localStorage.setItem(PROJECTS_KEY, JSON.stringify(data));
-    return data;
-  } catch (err) {
-    console.error("Failed to load projects:", err);
-    return [];
-  }
+  const { data, error } = await supabase
+    .from("projects")
+    .select("*")
+    .order("order_index", { ascending: true });
+  if (error) { console.error("getProjects:", error.message); return []; }
+  return data || [];
 }
 
-export function getProjectsSync() {
-  if (projectsCache) return projectsCache;
-  const stored = localStorage.getItem(PROJECTS_KEY);
-  if (stored) {
-    try { return JSON.parse(stored); } catch { return []; }
-  }
-  return [];
+export async function addProject(project) {
+  const projects = await getProjects();
+  const maxOrder = projects.reduce((m, p) => Math.max(m, p.order_index || 0), 0);
+  const { data, error } = await supabase
+    .from("projects")
+    .insert({ ...project, order_index: maxOrder + 1 })
+    .select()
+    .single();
+  if (error) console.error("addProject:", error.message);
+  return data;
 }
 
-export function setProjects(projects) {
-  projectsCache = projects;
-  localStorage.setItem(PROJECTS_KEY, JSON.stringify(projects));
+export async function updateProject(id, updates) {
+  const { error } = await supabase
+    .from("projects")
+    .update(updates)
+    .eq("id", id);
+  if (error) console.error("updateProject:", error.message);
 }
 
-export function addProject(project) {
-  const projects = getProjectsSync();
-  const maxId = projects.reduce((m, p) => Math.max(m, p.id || 0), 0);
-  const newProject = { ...project, id: maxId + 1 };
-  projects.push(newProject);
-  setProjects(projects);
-  return newProject;
+export async function deleteProject(id) {
+  const { error } = await supabase
+    .from("projects")
+    .delete()
+    .eq("id", id);
+  if (error) console.error("deleteProject:", error.message);
 }
 
-export function updateProject(id, updates) {
-  const projects = getProjectsSync();
+export async function reorderProject(id, direction) {
+  const projects = await getProjects();
   const idx = projects.findIndex((p) => p.id === id);
-  if (idx !== -1) {
-    projects[idx] = { ...projects[idx], ...updates };
-    setProjects(projects);
-  }
-  return projects;
-}
-
-export function deleteProject(id) {
-  const projects = getProjectsSync().filter((p) => p.id !== id);
-  setProjects(projects);
-  return projects;
-}
-
-export function reorderProject(id, direction) {
-  const projects = getProjectsSync();
-  const idx = projects.findIndex((p) => p.id === id);
-  if (idx === -1) return projects;
+  if (idx === -1) return;
   const targetIdx = direction === "up" ? idx - 1 : idx + 1;
-  if (targetIdx < 0 || targetIdx >= projects.length) return projects;
-  [projects[idx], projects[targetIdx]] = [projects[targetIdx], projects[idx]];
-  setProjects(projects);
-  return projects;
+  if (targetIdx < 0 || targetIdx >= projects.length) return;
+
+  const a = projects[idx];
+  const b = projects[targetIdx];
+  // Swap order_index values
+  await supabase.from("projects").update({ order_index: b.order_index }).eq("id", a.id);
+  await supabase.from("projects").update({ order_index: a.order_index }).eq("id", b.id);
 }
 
-// ── Profile ────────────────────────────────────────────
+// ── Profile ────────────────────────────────────────────────────────────────
 
-export function getProfile() {
-  const stored = localStorage.getItem(PROFILE_KEY);
-  if (stored) {
-    try { return JSON.parse(stored); } catch { /* fall through */ }
-  }
-  return { ...defaultProfile };
+export async function getProfile() {
+  const { data, error } = await supabase
+    .from("profile")
+    .select("data")
+    .eq("id", 1)
+    .maybeSingle();
+  if (error) { console.error("getProfile:", error.message); return { ...defaultProfile }; }
+  return data?.data || { ...defaultProfile };
 }
 
-export function setProfile(profile) {
-  localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+export async function setProfile(profile) {
+  const { error } = await supabase
+    .from("profile")
+    .upsert({ id: 1, data: profile }, { onConflict: "id" });
+  if (error) console.error("setProfile:", error.message);
 }
 
-// ── Export / Import ────────────────────────────────────
+// ── Export / Import ────────────────────────────────────────────────────────
 
-export function exportAll() {
-  return JSON.stringify({
-    projects: getProjectsSync(),
-    profile: getProfile(),
-  }, null, 2);
+export async function exportAll() {
+  const [projects, profile] = await Promise.all([getProjects(), getProfile()]);
+  return JSON.stringify({ projects, profile }, null, 2);
 }
 
-export function importAll(jsonString) {
+export async function importAll(jsonString) {
   const data = JSON.parse(jsonString);
-  if (data.projects) setProjects(data.projects);
-  if (data.profile) setProfile(data.profile);
+  if (data.projects && Array.isArray(data.projects)) {
+    // Clear existing and re-insert
+    await supabase.from("projects").delete().neq("id", 0);
+    if (data.projects.length > 0) {
+      await supabase.from("projects").insert(
+        data.projects.map((p, i) => ({ ...p, order_index: i }))
+      );
+    }
+  }
+  if (data.profile) {
+    await setProfile(data.profile);
+  }
 }
 
-export function resetAll() {
-  localStorage.removeItem(PROJECTS_KEY);
-  localStorage.removeItem(PROFILE_KEY);
-  projectsCache = null;
+export async function resetAll() {
+  await supabase.from("projects").delete().neq("id", 0);
+  await supabase.from("profile").delete().eq("id", 1);
+  await supabase.from("settings").delete().neq("key", "");
 }
 
-// ── Admin Auth ─────────────────────────────────────────
+// ── Settings (Resume URL) ──────────────────────────────────────────────────
+
+export async function getResumeUrl() {
+  const { data, error } = await supabase
+    .from("settings")
+    .select("value")
+    .eq("key", "resume_url")
+    .maybeSingle();
+  if (error) { console.error("getResumeUrl:", error.message); return null; }
+  return data?.value || null;
+}
+
+export async function setResumeUrl(url) {
+  if (url && url.trim()) {
+    const { error } = await supabase
+      .from("settings")
+      .upsert({ key: "resume_url", value: url.trim() }, { onConflict: "key" });
+    if (error) console.error("setResumeUrl:", error.message);
+  } else {
+    await supabase.from("settings").delete().eq("key", "resume_url");
+  }
+}
+
+// ── Admin PIN (stays in localStorage — device-specific) ────────────────────
 
 const PIN_KEY = "admin_pin_hash";
 
@@ -157,20 +169,3 @@ export async function verifyPin(pin) {
 export function clearPin() {
   localStorage.removeItem(PIN_KEY);
 }
-
-// ── Resume URL ─────────────────────────────────────────
-
-const RESUME_KEY = "portfolio_resume_url";
-
-export function getResumeUrl() {
-  return localStorage.getItem(RESUME_KEY) || null;
-}
-
-export function setResumeUrl(url) {
-  if (url && url.trim()) {
-    localStorage.setItem(RESUME_KEY, url.trim());
-  } else {
-    localStorage.removeItem(RESUME_KEY);
-  }
-}
-

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { exportAll, importAll, resetAll, setPin, getResumeUrl, setResumeUrl } from "./dataStore";
 
 export default function SettingsPage() {
@@ -8,8 +8,16 @@ export default function SettingsPage() {
   const [importMsg, setImportMsg] = useState(null);
   const [confirmReset, setConfirmReset] = useState(false);
   const fileRef = useRef();
-  const [resumeUrl, setResumeUrlState] = useState(getResumeUrl() || "");
+  const [resumeUrl, setResumeUrlState] = useState("");
   const [resumeMsg, setResumeMsg] = useState(null);
+  const [resumeLoaded, setResumeLoaded] = useState(false);
+
+  useEffect(() => {
+    getResumeUrl().then((url) => {
+      setResumeUrlState(url || "");
+      setResumeLoaded(true);
+    });
+  }, []);
 
   // ── PIN Change ──
   const handlePinChange = async () => {
@@ -29,8 +37,8 @@ export default function SettingsPage() {
   };
 
   // ── Export ──
-  const handleExport = () => {
-    const data = exportAll();
+  const handleExport = async () => {
+    const data = await exportAll();
     const blob = new Blob([data], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -47,9 +55,9 @@ export default function SettingsPage() {
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = (ev) => {
+    reader.onload = async (ev) => {
       try {
-        importAll(ev.target.result);
+        await importAll(ev.target.result);
         setImportMsg({ type: "success", text: "Data imported! Refresh to see changes." });
       } catch {
         setImportMsg({ type: "error", text: "Invalid JSON file" });
@@ -61,20 +69,20 @@ export default function SettingsPage() {
   };
 
   // ── Reset ──
-  const handleReset = () => {
-    resetAll();
+  const handleReset = async () => {
+    await resetAll();
     setConfirmReset(false);
     window.location.reload();
   };
 
   // ── Resume URL ──
-  const handleSaveResume = () => {
-    setResumeUrl(resumeUrl);
+  const handleSaveResume = async () => {
+    await setResumeUrl(resumeUrl);
     setResumeMsg({ type: "success", text: "Resume URL saved! The button on the site now links here." });
     setTimeout(() => setResumeMsg(null), 4000);
   };
-  const handleClearResume = () => {
-    setResumeUrl("");
+  const handleClearResume = async () => {
+    await setResumeUrl("");
     setResumeUrlState("");
     setResumeMsg({ type: "success", text: "Cleared — site will use the default resume file." });
     setTimeout(() => setResumeMsg(null), 3000);
@@ -122,13 +130,14 @@ export default function SettingsPage() {
             <i className="fas fa-file-pdf mr-2" />Resume Link
           </h2>
           <p className="text-xs mb-4" style={{ color: "var(--muted-text)" }}>
-            Paste a direct link to your resume (Google Drive, Dropbox, etc.). Leave blank to use the default file.
+            Paste a direct link (Google Drive, Dropbox…). Leave blank to use the default file.
           </p>
           <div className="flex flex-col gap-3">
             <input
               value={resumeUrl}
               onChange={(e) => setResumeUrlState(e.target.value)}
-              placeholder="https://drive.google.com/file/d/…/view?usp=sharing"
+              placeholder={resumeLoaded ? "https://drive.google.com/file/d/…" : "Loading…"}
+              disabled={!resumeLoaded}
               className="admin-input text-sm"
             />
             {resumeMsg && (
@@ -141,7 +150,7 @@ export default function SettingsPage() {
               <button onClick={handleSaveResume} className="btn-primary text-sm">
                 <i className="fas fa-save" /> Save URL
               </button>
-              {getResumeUrl() && (
+              {resumeLoaded && resumeUrl && (
                 <button onClick={handleClearResume}
                   className="px-4 py-2 rounded-lg text-sm font-medium"
                   style={{ background: "var(--glass)", color: "var(--muted-text)", border: "1px solid var(--glass-border)" }}>
@@ -149,13 +158,6 @@ export default function SettingsPage() {
                 </button>
               )}
             </div>
-            <p className="text-xs" style={{ color: "var(--muted-text)" }}>
-              <i className="fas fa-info-circle mr-1" />
-              {getResumeUrl()
-                ? <span>Currently using: <span style={{ color: "var(--cyan)" }}>custom URL</span></span>
-                : <span>Currently using: <span style={{ color: "var(--cyan)" }}>media/myresume.pdf</span></span>
-              }
-            </p>
           </div>
         </div>
 
@@ -165,19 +167,17 @@ export default function SettingsPage() {
             <i className="fas fa-database mr-2" />Data Management
           </h2>
           <div className="flex flex-col gap-4">
-            {/* Export */}
             <div className="p-4 rounded-xl flex items-center justify-between"
               style={{ background: "var(--glass)", border: "1px solid var(--glass-border)" }}>
               <div>
                 <p className="text-sm font-medium" style={{ color: "var(--white-text)" }}>Export Backup</p>
-                <p className="text-xs" style={{ color: "var(--muted-text)" }}>Download projects & profile as JSON backup</p>
+                <p className="text-xs" style={{ color: "var(--muted-text)" }}>Download projects & profile as JSON</p>
               </div>
               <button onClick={handleExport} className="admin-btn-sm px-4 py-2" style={{ color: "var(--cyan)" }}>
                 <i className="fas fa-download mr-1" /> Export
               </button>
             </div>
 
-            {/* Import */}
             <div className="p-4 rounded-xl flex items-center justify-between"
               style={{ background: "var(--glass)", border: "1px solid var(--glass-border)" }}>
               <div>
@@ -197,12 +197,11 @@ export default function SettingsPage() {
               </p>
             )}
 
-            {/* Reset */}
             <div className="p-4 rounded-xl flex items-center justify-between"
               style={{ background: "rgba(239,68,68,0.04)", border: "1px solid rgba(239,68,68,0.1)" }}>
               <div>
                 <p className="text-sm font-medium" style={{ color: "#ef4444" }}>Reset All Data</p>
-                <p className="text-xs" style={{ color: "var(--muted-text)" }}>Clear all local changes and reload defaults</p>
+                <p className="text-xs" style={{ color: "var(--muted-text)" }}>Clear all database data and reload defaults</p>
               </div>
               <button onClick={() => setConfirmReset(true)} className="admin-btn-sm px-4 py-2" style={{ color: "#ef4444" }}>
                 <i className="fas fa-trash mr-1" /> Reset
@@ -223,7 +222,7 @@ export default function SettingsPage() {
               </div>
               <h3 className="text-lg font-semibold mb-2" style={{ color: "var(--white-text)" }}>Reset All Data?</h3>
               <p className="text-sm mb-5" style={{ color: "var(--muted-text)" }}>
-                This will delete all local changes and reload the defaults. Your PIN will not be affected.
+                This will permanently delete all data from the database. Your PIN will not be affected.
               </p>
               <div className="flex gap-3 justify-center">
                 <button onClick={() => setConfirmReset(false)}
