@@ -1,6 +1,7 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import {
   getProjects, addProject, updateProject, deleteProject, reorderProject,
+  uploadProjectImage,
 } from "./dataStore";
 
 const emptyProject = {
@@ -15,6 +16,9 @@ export default function ProjectsPage() {
   const [search, setSearch] = useState("");
   const [confirmDelete, setConfirmDelete] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
+  const imageRef = useRef();
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -31,9 +35,24 @@ export default function ProjectsPage() {
       p.category.toLowerCase().includes(search.toLowerCase())
   );
 
-  const openAdd = () => { setForm({ ...emptyProject }); setModal("add"); };
-  const openEdit = (project) => { setForm({ ...project }); setModal(project); };
-  const closeModal = () => { setModal(null); setForm({ ...emptyProject }); };
+  const openAdd = () => { setForm({ ...emptyProject }); setModal("add"); setUploadError(""); };
+  const openEdit = (project) => { setForm({ ...project }); setModal(project); setUploadError(""); };
+  const closeModal = () => { setModal(null); setForm({ ...emptyProject }); setUploadError(""); };
+
+  const handleImageUpload = async (file) => {
+    if (!file) return;
+    if (!file.type.startsWith("image/")) { setUploadError("Please select an image file."); return; }
+    if (file.size > 5 * 1024 * 1024) { setUploadError("Image must be under 5 MB."); return; }
+    setUploadError("");
+    setUploading(true);
+    try {
+      const url = await uploadProjectImage(file);
+      setForm((prev) => ({ ...prev, image: url }));
+    } catch (err) {
+      setUploadError(err.message.includes("bucket") ? 'Storage bucket not found. Create a public bucket named "portfolio" in Supabase Storage.' : err.message);
+    }
+    setUploading(false);
+  };
 
   const handleSave = async () => {
     if (!form.title.trim()) return;
@@ -248,19 +267,72 @@ export default function ProjectsPage() {
               {[
                 { key: "title", label: "Title", placeholder: "My Awesome Project" },
                 { key: "category", label: "Category", placeholder: "DevOps, Web, etc." },
-                { key: "image", label: "Image URL", placeholder: "https://… or media/project.png" },
-                { key: "github", label: "GitHub URL", placeholder: "https://github.com/…" },
-                { key: "live", label: "Live URL", placeholder: "https://…" },
               ].map(({ key, label, placeholder }) => (
                 <div key={key}>
                   <label className="block mb-1.5 text-xs font-medium uppercase tracking-wider"
                     style={{ color: "var(--muted-text)" }}>{label}</label>
-                  <input
-                    value={form[key]}
-                    onChange={(e) => handleField(key, e.target.value)}
-                    placeholder={placeholder}
-                    className="admin-input"
-                  />
+                  <input value={form[key]} onChange={(e) => handleField(key, e.target.value)}
+                    placeholder={placeholder} className="admin-input" />
+                </div>
+              ))}
+
+              {/* ── Image Upload ── */}
+              <div>
+                <label className="block mb-1.5 text-xs font-medium uppercase tracking-wider"
+                  style={{ color: "var(--muted-text)" }}>Project Image</label>
+                <div
+                  onClick={() => !uploading && imageRef.current?.click()}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={(e) => { e.preventDefault(); handleImageUpload(e.dataTransfer.files[0]); }}
+                  className="relative rounded-xl overflow-hidden cursor-pointer flex items-center justify-center gap-3 mb-2"
+                  style={{ height: form.image ? 120 : 80, background: "var(--glass)", border: "2px dashed var(--glass-border)", transition: "all 0.2s" }}
+                  onMouseEnter={(e) => { e.currentTarget.style.borderColor = "var(--accent-text)"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.borderColor = "var(--glass-border)"; }}
+                >
+                  {form.image && (
+                    <img src={form.image} alt="preview"
+                      className="absolute inset-0 w-full h-full object-cover"
+                      style={{ opacity: 0.5 }} />
+                  )}
+                  <div className="relative z-10 flex flex-col items-center gap-1 pointer-events-none">
+                    {uploading ? (
+                      <>
+                        <i className="fas fa-spinner fa-spin text-xl" style={{ color: "var(--white-text)" }} />
+                        <span className="text-xs" style={{ color: "var(--white-text)" }}>Uploading…</span>
+                      </>
+                    ) : form.image ? (
+                      <>
+                        <i className="fas fa-camera text-xl" style={{ color: "var(--white-text)" }} />
+                        <span className="text-xs" style={{ color: "var(--white-text)" }}>Click to change</span>
+                      </>
+                    ) : (
+                      <>
+                        <i className="fas fa-cloud-arrow-up text-2xl" style={{ color: "var(--accent-text)" }} />
+                        <span className="text-sm" style={{ color: "var(--muted-text)" }}>Click or drag image here</span>
+                      </>
+                    )}
+                  </div>
+                </div>
+                <input ref={imageRef} type="file" accept="image/*" className="hidden"
+                  onChange={(e) => handleImageUpload(e.target.files[0])} />
+                {uploadError && (
+                  <p className="text-xs mb-2" style={{ color: "#ef4444" }}>
+                    <i className="fas fa-exclamation-circle mr-1" />{uploadError}
+                  </p>
+                )}
+                <input value={form.image} onChange={(e) => handleField("image", e.target.value)}
+                  placeholder="Or paste an image URL…" className="admin-input text-xs" style={{ opacity: 0.7 }} />
+              </div>
+
+              {[
+                { key: "github", label: "GitHub URL", placeholder: "https://github.com/…" },
+                { key: "live",   label: "Live URL",   placeholder: "https://…" },
+              ].map(({ key, label, placeholder }) => (
+                <div key={key}>
+                  <label className="block mb-1.5 text-xs font-medium uppercase tracking-wider"
+                    style={{ color: "var(--muted-text)" }}>{label}</label>
+                  <input value={form[key]} onChange={(e) => handleField(key, e.target.value)}
+                    placeholder={placeholder} className="admin-input" />
                 </div>
               ))}
               <div>

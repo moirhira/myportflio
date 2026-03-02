@@ -4,14 +4,27 @@
 
 import { supabase } from "./supabase";
 
+// ── Image Upload ───────────────────────────────────────────────────────────
+
+export async function uploadProjectImage(file) {
+  const ext = file.name.split(".").pop();
+  const filename = `projects/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+  const { data, error } = await supabase.storage
+    .from("portfolio")
+    .upload(filename, file, { upsert: false, contentType: file.type });
+  if (error) throw new Error(error.message);
+  const { data: urlData } = supabase.storage.from("portfolio").getPublicUrl(data.path);
+  return urlData.publicUrl;
+}
+
 // ── Default profile fallback ───────────────────────────────────────────────
 const defaultProfile = {
   name: "Mohamed",
   school: "1337 UM6P",
   stats: [
-    { value: "3+",   labelEn: "Years of Coding",  labelFr: "Années de Code" },
-    { value: "10+",  labelEn: "Projects Built",   labelFr: "Projets Réalisés" },
-    { value: "1337", labelEn: "UM6P Student",     labelFr: "Étudiant UM6P" },
+    { value: "3+", labelEn: "Years of Coding", labelFr: "Années de Code" },
+    { value: "10+", labelEn: "Projects Built", labelFr: "Projets Réalisés" },
+    { value: "1337", labelEn: "UM6P Student", labelFr: "Étudiant UM6P" },
   ],
 };
 
