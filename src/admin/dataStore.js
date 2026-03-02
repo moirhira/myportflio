@@ -17,6 +17,22 @@ export async function uploadProjectImage(file) {
   return urlData.publicUrl;
 }
 
+// ── Resume Upload ──────────────────────────────────────────────────────────
+
+export async function uploadResumeFile(file) {
+  const ext = file.name.split(".").pop();
+  const filename = `resumes/resume_${Date.now()}.${ext}`;
+  const { data, error } = await supabase.storage
+    .from("portfolio")
+    .upload(filename, file, { upsert: true, contentType: file.type });
+  if (error) throw new Error(error.message);
+  const { data: urlData } = supabase.storage.from("portfolio").getPublicUrl(data.path);
+  const publicUrl = urlData.publicUrl;
+  // Auto-save as the resume URL setting
+  await setResumeUrl(publicUrl);
+  return publicUrl;
+}
+
 // ── Default profile fallback ───────────────────────────────────────────────
 const defaultProfile = {
   name: "Mohamed",

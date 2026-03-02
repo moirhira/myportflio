@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import { exportAll, importAll, resetAll, setPin, getResumeUrl, setResumeUrl } from "./dataStore";
+import { exportAll, importAll, resetAll, setPin, getResumeUrl, setResumeUrl, uploadResumeFile } from "./dataStore";
+
 
 export default function SettingsPage() {
   const [newPin, setNewPin] = useState("");
@@ -8,9 +9,13 @@ export default function SettingsPage() {
   const [importMsg, setImportMsg] = useState(null);
   const [confirmReset, setConfirmReset] = useState(false);
   const fileRef = useRef();
+  const resumeFileRef = useRef();
   const [resumeUrl, setResumeUrlState] = useState("");
   const [resumeMsg, setResumeMsg] = useState(null);
   const [resumeLoaded, setResumeLoaded] = useState(false);
+  const [resumeUploading, setResumeUploading] = useState(false);
+  const [resumeFileName, setResumeFileName] = useState("");
+
 
   useEffect(() => {
     getResumeUrl().then((url) => {
@@ -75,18 +80,46 @@ export default function SettingsPage() {
     window.location.reload();
   };
 
-  // ── Resume URL ──
+  // ── Resume Upload ──
+  const handleResumeFileUpload = async (file) => {
+    if (!file) return;
+    const allowed = ["application/pdf", "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
+    if (!allowed.includes(file.type) && !file.name.match(/\.(pdf|doc|docx)$/i)) {
+      setResumeMsg({ type: "error", text: "Please select a PDF or Word document." });
+      return;
+    }
+    setResumeMsg(null);
+    setResumeUploading(true);
+    try {
+      const url = await uploadResumeFile(file);
+      setResumeUrlState(url);
+      setResumeFileName(file.name);
+      setResumeMsg({ type: "success", text: `"${file.name}" uploaded & saved!` });
+    } catch (err) {
+      setResumeMsg({
+        type: "error", text: err.message.includes("bucket") ?
+          'Create a public Storage bucket named "portfolio" in Supabase.' : err.message
+      });
+    }
+    setResumeUploading(false);
+    setTimeout(() => setResumeMsg(null), 4000);
+  };
+
+  // ── Resume URL (manual) ──
   const handleSaveResume = async () => {
     await setResumeUrl(resumeUrl);
-    setResumeMsg({ type: "success", text: "Resume URL saved! The button on the site now links here." });
+    setResumeMsg({ type: "success", text: "Resume URL saved!" });
     setTimeout(() => setResumeMsg(null), 4000);
   };
   const handleClearResume = async () => {
     await setResumeUrl("");
     setResumeUrlState("");
+    setResumeFileName("");
     setResumeMsg({ type: "success", text: "Cleared — site will use the default resume file." });
     setTimeout(() => setResumeMsg(null), 3000);
   };
+
 
   return (
     <div>
@@ -124,40 +157,70 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        {/* Resume URL */}
+        {/* Resume */}
         <div className="admin-card p-6">
           <h2 className="text-sm font-semibold uppercase tracking-wider mb-1" style={{ color: "var(--accent-text)" }}>
-            <i className="fas fa-file-pdf mr-2" />Resume Link
+            <i className="fas fa-file-pdf mr-2" />Resume / CV
           </h2>
           <p className="text-xs mb-4" style={{ color: "var(--muted-text)" }}>
-            Paste a direct link (Google Drive, Dropbox…). Leave blank to use the default file.
+            Upload your resume file or paste a URL. The "My Resume" button on the site links here.
           </p>
           <div className="flex flex-col gap-3">
-            <input
-              value={resumeUrl}
-              onChange={(e) => setResumeUrlState(e.target.value)}
-              placeholder={resumeLoaded ? "https://drive.google.com/file/d/…" : "Loading…"}
-              disabled={!resumeLoaded}
-              className="admin-input text-sm"
-            />
+            {/* Upload zone */}
+            <div
+              onClick={() => !resumeUploading && resumeFileRef.current?.click()}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => { e.preventDefault(); handleResumeFileUpload(e.dataTransfer.files[0]); }}
+              className="relative rounded-xl cursor-pointer flex flex-col items-center justify-center gap-2 py-5 px-4"
+              style={{ background: "var(--glass)", border: "2px dashed var(--glass-border)", transition: "border-color 0.2s", minHeight: 80 }}
+              onMouseEnter={(e) => { e.currentTarget.style.borderColor = "var(--accent-text)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.borderColor = "var(--glass-border)"; }}
+            >
+              {resumeUploading ? (
+                <><i className="fas fa-spinner fa-spin text-xl" style={{ color: "var(--accent-text)" }} />
+                  <span className="text-xs" style={{ color: "var(--muted-text)" }}>Uploading…</span></>
+              ) : resumeFileName || resumeUrl ? (
+                <><i className="fas fa-file-check text-xl" style={{ color: "#22c55e" }} />
+                  <span className="text-xs text-center" style={{ color: "#22c55e" }}>
+                    {resumeFileName || "File uploaded"}
+                  </span>
+                  <span className="text-xs" style={{ color: "var(--muted-text)" }}>Click to replace</span></>
+              ) : (
+                <><i className="fas fa-cloud-arrow-up text-2xl" style={{ color: "var(--accent-text)" }} />
+                  <span className="text-sm" style={{ color: "var(--muted-text)" }}>Click or drag PDF / Word file here</span></>
+              )}
+            </div>
+            <input ref={resumeFileRef} type="file" accept=".pdf,.doc,.docx,application/pdf" className="hidden"
+              onChange={(e) => handleResumeFileUpload(e.target.files[0])} />
+
             {resumeMsg && (
               <p className="text-xs" style={{ color: resumeMsg.type === "error" ? "#ef4444" : "#22c55e" }}>
                 <i className={`fas ${resumeMsg.type === "error" ? "fa-exclamation-circle" : "fa-check-circle"} mr-1`} />
                 {resumeMsg.text}
               </p>
             )}
-            <div className="flex gap-2">
-              <button onClick={handleSaveResume} className="btn-primary text-sm">
-                <i className="fas fa-save" /> Save URL
-              </button>
-              {resumeLoaded && resumeUrl && (
-                <button onClick={handleClearResume}
-                  className="px-4 py-2 rounded-lg text-sm font-medium"
-                  style={{ background: "var(--glass)", color: "var(--muted-text)", border: "1px solid var(--glass-border)" }}>
-                  <i className="fas fa-xmark mr-1" /> Use Default
+
+            {/* URL fallback */}
+            <div>
+              <label className="block mb-1 text-xs" style={{ color: "var(--muted-text)" }}>Or paste a URL (Google Drive, Dropbox…)</label>
+              <div className="flex gap-2">
+                <input value={resumeUrl} onChange={(e) => setResumeUrlState(e.target.value)}
+                  placeholder={resumeLoaded ? "https://…" : "Loading…"}
+                  disabled={!resumeLoaded}
+                  className="admin-input text-sm flex-1" style={{ opacity: 0.7 }} />
+                <button onClick={handleSaveResume} className="btn-primary text-sm px-3">
+                  <i className="fas fa-save" />
                 </button>
-              )}
+              </div>
             </div>
+
+            {resumeLoaded && resumeUrl && (
+              <button onClick={handleClearResume}
+                className="text-xs self-start px-3 py-1.5 rounded-lg"
+                style={{ background: "var(--glass)", color: "var(--muted-text)", border: "1px solid var(--glass-border)" }}>
+                <i className="fas fa-xmark mr-1" /> Clear / Use Default
+              </button>
+            )}
           </div>
         </div>
 
