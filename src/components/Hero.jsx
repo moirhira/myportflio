@@ -7,9 +7,15 @@ export default function Hero() {
   const [resumeHref, setResumeHref] = useState("media/myresume.pdf");
 
   useEffect(() => {
-    getResumeUrl().then((url) => {
-      if (url) setResumeHref(url);
-    });
+    const fetchResumeUrl = () => {
+      getResumeUrl().then((url) => {
+        if (url) setResumeHref(url);
+      });
+    };
+    fetchResumeUrl(); // fetch on mount
+    // Re-fetch whenever the tab becomes visible again (e.g. returning from admin panel)
+    document.addEventListener("visibilitychange", fetchResumeUrl);
+    return () => document.removeEventListener("visibilitychange", fetchResumeUrl);
   }, []);
 
 
