@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
-import { exportAll, importAll, resetAll, setPin, getResumeUrl, setResumeUrl, uploadResumeFile } from "./dataStore";
+import { exportAll, importAll, resetAll, authChangePassword, getResumeUrl, setResumeUrl, uploadResumeFile } from "./dataStore";
 
 
 export default function SettingsPage() {
-  const [newPin, setNewPin] = useState("");
-  const [confirmPin, setConfirmPin] = useState("");
-  const [pinMsg, setPinMsg] = useState(null);
+  const [currentPass, setCurrentPass] = useState("");
+  const [newPass, setNewPass] = useState("");
+  const [confirmPass, setConfirmPass] = useState("");
+  const [passMsg, setPassMsg] = useState(null);
+  const [passLoading, setPassLoading] = useState(false);
   const [importMsg, setImportMsg] = useState(null);
   const [confirmReset, setConfirmReset] = useState(false);
   const fileRef = useRef();
@@ -24,21 +26,33 @@ export default function SettingsPage() {
     });
   }, []);
 
-  // ── PIN Change ──
-  const handlePinChange = async () => {
-    if (newPin.length < 4) {
-      setPinMsg({ type: "error", text: "PIN must be at least 4 characters" });
+  // ── Password Change ──
+  const handlePasswordChange = async () => {
+    setPassMsg(null);
+    if (!currentPass) {
+      setPassMsg({ type: "error", text: "Current password is required" });
       return;
     }
-    if (newPin !== confirmPin) {
-      setPinMsg({ type: "error", text: "PINs don't match" });
+    if (newPass.length < 6) {
+      setPassMsg({ type: "error", text: "New password must be at least 6 characters" });
       return;
     }
-    await setPin(newPin);
-    setPinMsg({ type: "success", text: "PIN updated!" });
-    setNewPin("");
-    setConfirmPin("");
-    setTimeout(() => setPinMsg(null), 3000);
+    if (newPass !== confirmPass) {
+      setPassMsg({ type: "error", text: "New passwords don't match" });
+      return;
+    }
+    setPassLoading(true);
+    try {
+      await authChangePassword(currentPass, newPass);
+      setPassMsg({ type: "success", text: "Password changed successfully!" });
+      setCurrentPass("");
+      setNewPass("");
+      setConfirmPass("");
+    } catch (err) {
+      setPassMsg({ type: "error", text: err.message });
+    }
+    setPassLoading(false);
+    setTimeout(() => setPassMsg(null), 4000);
   };
 
   // ── Export ──
@@ -129,30 +143,36 @@ export default function SettingsPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Change PIN */}
+        {/* Change Password */}
         <div className="admin-card p-6">
           <h2 className="text-sm font-semibold uppercase tracking-wider mb-4" style={{ color: "var(--accent-text)" }}>
-            <i className="fas fa-key mr-2" />Change PIN
+            <i className="fas fa-key mr-2" />Change Password
           </h2>
           <div className="flex flex-col gap-3">
             <div>
-              <label className="block mb-1.5 text-xs font-medium uppercase tracking-wider" style={{ color: "var(--muted-text)" }}>New PIN</label>
-              <input type="password" value={newPin} onChange={(e) => setNewPin(e.target.value)}
-                className="admin-input" placeholder="••••••" />
+              <label className="block mb-1.5 text-xs font-medium uppercase tracking-wider" style={{ color: "var(--muted-text)" }}>Current Password</label>
+              <input type="password" value={currentPass} onChange={(e) => setCurrentPass(e.target.value)}
+                className="admin-input" placeholder="••••••••" />
             </div>
             <div>
-              <label className="block mb-1.5 text-xs font-medium uppercase tracking-wider" style={{ color: "var(--muted-text)" }}>Confirm PIN</label>
-              <input type="password" value={confirmPin} onChange={(e) => setConfirmPin(e.target.value)}
-                className="admin-input" placeholder="••••••" />
+              <label className="block mb-1.5 text-xs font-medium uppercase tracking-wider" style={{ color: "var(--muted-text)" }}>New Password</label>
+              <input type="password" value={newPass} onChange={(e) => setNewPass(e.target.value)}
+                className="admin-input" placeholder="••••••••" />
             </div>
-            {pinMsg && (
-              <p className="text-xs" style={{ color: pinMsg.type === "error" ? "#ef4444" : "#22c55e" }}>
-                <i className={`fas ${pinMsg.type === "error" ? "fa-exclamation-circle" : "fa-check-circle"} mr-1`} />
-                {pinMsg.text}
+            <div>
+              <label className="block mb-1.5 text-xs font-medium uppercase tracking-wider" style={{ color: "var(--muted-text)" }}>Confirm New Password</label>
+              <input type="password" value={confirmPass} onChange={(e) => setConfirmPass(e.target.value)}
+                className="admin-input" placeholder="••••••••" />
+            </div>
+            {passMsg && (
+              <p className="text-xs" style={{ color: passMsg.type === "error" ? "#ef4444" : "#22c55e" }}>
+                <i className={`fas ${passMsg.type === "error" ? "fa-exclamation-circle" : "fa-check-circle"} mr-1`} />
+                {passMsg.text}
               </p>
             )}
-            <button onClick={handlePinChange} className="btn-primary text-sm self-start mt-1">
-              <i className="fas fa-shield-halved" /> Update PIN
+            <button onClick={handlePasswordChange} disabled={passLoading} className="btn-primary text-sm self-start mt-1">
+              {passLoading ? <i className="fas fa-spinner fa-spin" /> : <i className="fas fa-shield-halved" />}
+              {passLoading ? " Updating..." : " Update Password"}
             </button>
           </div>
         </div>
@@ -285,7 +305,7 @@ export default function SettingsPage() {
               </div>
               <h3 className="text-lg font-semibold mb-2" style={{ color: "var(--white-text)" }}>Reset All Data?</h3>
               <p className="text-sm mb-5" style={{ color: "var(--muted-text)" }}>
-                This will permanently delete all data from the database. Your PIN will not be affected.
+                This will permanently delete all data from the database. Your admin password will not be affected.
               </p>
               <div className="flex gap-3 justify-center">
                 <button onClick={() => setConfirmReset(false)}

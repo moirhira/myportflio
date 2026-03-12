@@ -1,27 +1,72 @@
-import React, { useState } from "react";
-import { isPinSet, setPin, verifyPin } from "./dataStore";
+import React, { useState, useEffect } from "react";
+import { authStatus, authSetup, authLogin, authVerify } from "./dataStore";
 
 export default function AdminAuth({ children }) {
     const [authed, setAuthed] = useState(false);
-    const [pin, setPinVal] = useState("");
+    const [loading, setLoading] = useState(true);
+    const [password, setPassword] = useState("");
     const [confirm, setConfirm] = useState("");
     const [error, setError] = useState("");
-    const [isSetup] = useState(!isPinSet());
+    const [isSetup, setIsSetup] = useState(false); // true = no admin exists yet
 
-    const handleLogin = async (e) => {
+    // On mount: check server for auth status + existing session
+    useEffect(() => {
+        (async () => {
+            try {
+                // 1. Check if admin password already exists on the server
+                const status = await authStatus();
+                setIsSetup(!status.isSetup); // if NOT setup on server, show setup form
+
+                // 2. If we have a stored JWT, verify it's still valid
+                if (status.isSetup) {
+                    const valid = await authVerify();
+                    if (valid) setAuthed(true);
+                }
+            } catch (err) {
+                console.error("Auth check failed:", err);
+            } finally {
+                setLoading(false);
+            }
+        })();
+    }, []);
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
-        if (isSetup) {
-            if (pin.length < 4) { setError("PIN must be at least 4 characters"); return; }
-            if (pin !== confirm) { setError("PINs don't match"); return; }
-            await setPin(pin);
+        try {
+            if (isSetup) {
+                // First-time setup
+                if (password.length < 6) {
+                    setError("Password must be at least 6 characters");
+                    return;
+                }
+                if (password !== confirm) {
+                    setError("Passwords don't match");
+                    return;
+                }
+                await authSetup(password);
+            } else {
+                // Login
+                await authLogin(password);
+            }
             setAuthed(true);
-        } else {
-            const ok = await verifyPin(pin);
-            if (ok) setAuthed(true);
-            else setError("Wrong PIN. Try again.");
+        } catch (err) {
+            setError(err.message);
         }
     };
+
+    if (loading) {
+        return (
+            <div className="admin-auth-bg">
+                <div className="admin-auth-card text-center">
+                    <div className="flex items-center justify-center gap-3" style={{ color: "var(--muted-text)" }}>
+                        <i className="fas fa-spinner fa-spin text-xl" />
+                        <span>Checking authentication...</span>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     if (authed) return children;
 
@@ -36,21 +81,21 @@ export default function AdminAuth({ children }) {
                     </div>
                     <h1 className="text-2xl font-bold gradient-heading">Admin Panel</h1>
                     <p className="text-sm mt-1" style={{ color: "var(--muted-text)" }}>
-                        {isSetup ? "Set up your admin PIN" : "Enter your PIN to continue"}
+                        {isSetup ? "Create your admin password" : "Enter your password to continue"}
                     </p>
                 </div>
 
-                <form onSubmit={handleLogin} className="flex flex-col gap-4">
+                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                     <div>
                         <label className="block mb-1.5 text-xs font-medium uppercase tracking-wider" style={{ color: "var(--muted-text)" }}>
-                            {isSetup ? "New PIN" : "PIN"}
+                            {isSetup ? "New Password" : "Password"}
                         </label>
                         <input
                             type="password"
-                            value={pin}
-                            onChange={(e) => setPinVal(e.target.value)}
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
                             className="admin-input"
-                            placeholder="••••••"
+                            placeholder="••••••••"
                             autoFocus
                         />
                     </div>
@@ -58,14 +103,14 @@ export default function AdminAuth({ children }) {
                     {isSetup && (
                         <div>
                             <label className="block mb-1.5 text-xs font-medium uppercase tracking-wider" style={{ color: "var(--muted-text)" }}>
-                                Confirm PIN
+                                Confirm Password
                             </label>
                             <input
                                 type="password"
                                 value={confirm}
                                 onChange={(e) => setConfirm(e.target.value)}
                                 className="admin-input"
-                                placeholder="••••••"
+                                placeholder="••••••••"
                             />
                         </div>
                     )}
@@ -78,9 +123,16 @@ export default function AdminAuth({ children }) {
 
                     <button type="submit" className="btn-primary w-full justify-center mt-2">
                         <i className={`fas ${isSetup ? "fa-key" : "fa-lock-open"}`} />
-                        {isSetup ? "Set PIN & Enter" : "Unlock"}
+                        {isSetup ? "Create Password & Enter" : "Unlock"}
                     </button>
                 </form>
+
+                {!isSetup && (
+                    <p className="text-xs mt-4 text-center" style={{ color: "var(--muted-text)", opacity: 0.6 }}>
+                        <i className="fas fa-lock mr-1" />
+                        Password is stored securely on the server
+                    </p>
+                )}
             </div>
         </div>
     );

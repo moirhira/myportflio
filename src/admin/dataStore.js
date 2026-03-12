@@ -168,33 +168,79 @@ export async function setResumeUrl(url) {
   }
 }
 
-// ── Admin PIN (stays in localStorage — device-specific) ────────────────────
+// ── Admin Auth (server-side — JWT) ─────────────────────────────────────────
 
-const PIN_KEY = "admin_pin_hash";
+const TOKEN_KEY = "admin_jwt";
 
-async function hashPin(pin) {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(pin + "_portfolio_salt");
-  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-  return Array.from(new Uint8Array(hashBuffer))
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
+export function getToken() {
+  return localStorage.getItem(TOKEN_KEY);
 }
 
-export function isPinSet() {
-  return !!localStorage.getItem(PIN_KEY);
+export function setToken(token) {
+  localStorage.setItem(TOKEN_KEY, token);
 }
 
-export async function setPin(pin) {
-  const hash = await hashPin(pin);
-  localStorage.setItem(PIN_KEY, hash);
+export function clearToken() {
+  localStorage.removeItem(TOKEN_KEY);
 }
 
-export async function verifyPin(pin) {
-  const hash = await hashPin(pin);
-  return hash === localStorage.getItem(PIN_KEY);
+function authHeaders() {
+  const token = getToken();
+  return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
-export function clearPin() {
-  localStorage.removeItem(PIN_KEY);
+export async function authStatus() {
+  const res = await fetch("/api/auth/status");
+  const data = await res.json();
+  return data; // { isSetup: bool }
 }
+
+export async function authSetup(password) {
+  const res = await fetch("/api/auth/setup", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ password }),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "Setup failed");
+  setToken(data.token);
+  return data;
+}
+
+export async function authLogin(password) {
+  const res = await fetch("/api/auth/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ password }),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "Login failed");
+  setToken(data.token);
+  return data;
+}
+
+export async function authVerify() {
+  const token = getToken();
+  if (!token) return false;
+  try {
+    const res = await fetch("/api/auth/verify", {
+      headers: authHeaders(),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+export async function authChangePassword(currentPassword, newPassword) {
+  const res = await fetch("/api/auth/change-password", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...authHeaders() },
+    body: JSON.stringify({ currentPassword, newPassword }),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "Password change failed");
+  setToken(data.token);
+  return data;
+}
+
