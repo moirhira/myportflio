@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { authStatus, authSetup, authLogin, authVerify } from "./dataStore";
+import { authStatus, authSetup, authLogin, authVerify } from "../services/dataStore";
 
 export default function AdminAuth({ children }) {
     const [authed, setAuthed] = useState(false);

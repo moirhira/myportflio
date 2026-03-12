@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback, useRef } from "react";
 import {
   getProjects, addProject, updateProject, deleteProject, reorderProject,
   uploadProjectImage,
-} from "./dataStore";
+} from "../services/dataStore";
 
 const emptyProject = {
   title: "", category: "", description: "", image: "", github: "", live: "",

@@ -1,6 +1,6 @@
 import React from "react";
-import { useTheme } from "../ThemeContext";
-import { useLang } from "../LanguageContext";
+import { useTheme } from "../contexts/ThemeContext";
+import { useLang } from "../contexts/LanguageContext";
 
 const scrollTo = (id, closeMobile) => {
   // When inside the portfolio page, scroll to the section

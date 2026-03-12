@@ -1,5 +1,5 @@
 import React from "react";
-import { useLang } from "../LanguageContext";
+import { useLang } from "../contexts/LanguageContext";
 
 export default function Footer() {
   const { t } = useLang();
@@ -49,6 +49,18 @@ export default function Footer() {
             aria-label="LinkedIn"
           >
             <i className="fab fa-linkedin-in" />
+          </a>
+          <a
+            target="_blank"
+            rel="noreferrer"
+            href="https://medium.com/@mohamedirhirallah"
+            className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200"
+            style={{ background: "var(--social-bg)", border: "1px solid var(--social-border)", color: "var(--muted-text)" }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = "var(--social-hover)"; e.currentTarget.style.color = "var(--white-text)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = "var(--social-bg)"; e.currentTarget.style.color = "var(--muted-text)"; }}
+            aria-label="Medium"
+          >
+            <i className="fab fa-medium" />
           </a>
         </div>
 

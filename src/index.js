@@ -2,8 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import { ThemeProvider } from './ThemeContext';
-import { LanguageProvider } from './LanguageContext';
+import { ThemeProvider } from './contexts/ThemeContext';
+import { LanguageProvider } from './contexts/LanguageContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

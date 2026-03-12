@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useLang } from "../LanguageContext";
-import { getResumeUrl } from "../admin/dataStore";
+import { useLang } from "../contexts/LanguageContext";
+import { getResumeUrl } from "../admin/services/dataStore";
 
 export default function Hero() {
   const { t } = useLang();

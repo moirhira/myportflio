@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getProfile, setProfile } from "./dataStore";
+import { getProfile, setProfile } from "../services/dataStore";
 
 export default function ProfilePage() {
     const [profile, setLocal] = useState(null);

@@ -2,7 +2,7 @@
 // All portfolio data is stored in Supabase PostgreSQL.
 // The admin PIN is the only thing kept in localStorage (it's device-specific).
 
-import { supabase } from "./supabase";
+import { supabase } from "../../services/supabase";
 
 // ── Image Upload ───────────────────────────────────────────────────────────
 

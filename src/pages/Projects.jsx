@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useLang } from "../LanguageContext";
-import { getProjects } from "../admin/dataStore";
+import { useLang } from "../contexts/LanguageContext";
+import { getProjects } from "../admin/services/dataStore";
 
 export default function Projects() {
   const { t } = useLang();

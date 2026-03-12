@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { exportAll, importAll, resetAll, authChangePassword, getResumeUrl, setResumeUrl, uploadResumeFile } from "./dataStore";
+import { exportAll, importAll, resetAll, authChangePassword, getResumeUrl, setResumeUrl, uploadResumeFile } from "../services/dataStore";
 
 
 export default function SettingsPage() {

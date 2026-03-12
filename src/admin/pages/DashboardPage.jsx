@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getProjects, addProject } from "./dataStore";
-import { supabase } from "./supabase";
+import { getProjects, addProject } from "../services/dataStore";
+import { supabase } from "../../services/supabase";
 
 export default function DashboardPage() {
   const navigate = useNavigate();
@@ -29,10 +29,10 @@ export default function DashboardPage() {
   const categories = [...new Set(projects.map((p) => p.category))];
 
   const stats = [
-    { icon: "fas fa-folder-open", value: projects.length,                                       label: "Total Projects",  color: "var(--primary-light)" },
-    { icon: "fas fa-tags",        value: categories.length,                                      label: "Categories",      color: "var(--cyan)"          },
-    { icon: "fas fa-code-branch", value: projects.filter((p) => p.github).length,               label: "With GitHub",     color: "var(--pink)"          },
-    { icon: "fas fa-globe",       value: projects.filter((p) => p.live && p.live !== "#").length, label: "With Live Demo", color: "#22c55e"              },
+    { icon: "fas fa-folder-open", value: projects.length, label: "Total Projects", color: "var(--primary-light)" },
+    { icon: "fas fa-tags", value: categories.length, label: "Categories", color: "var(--cyan)" },
+    { icon: "fas fa-code-branch", value: projects.filter((p) => p.github).length, label: "With GitHub", color: "var(--pink)" },
+    { icon: "fas fa-globe", value: projects.filter((p) => p.live && p.live !== "#").length, label: "With Live Demo", color: "#22c55e" },
   ];
 
   // Migrate old projects.json into Supabase
@@ -83,12 +83,11 @@ export default function DashboardPage() {
           background: dbStatus === "error" ? "rgba(239,68,68,0.08)" : dbStatus === "ok" ? "rgba(34,197,94,0.07)" : "rgba(255,255,255,0.04)",
           border: `1px solid ${dbStatus === "error" ? "rgba(239,68,68,0.3)" : dbStatus === "ok" ? "rgba(34,197,94,0.2)" : "var(--glass-border)"}`,
         }}>
-        <i className={`fas mt-0.5 ${
-          dbStatus === "checking" ? "fa-spinner fa-spin" :
-          dbStatus === "ok"       ? "fa-circle-check"   : "fa-circle-exclamation"
-        }`} style={{
-          color: dbStatus === "error" ? "#ef4444" : dbStatus === "ok" ? "#22c55e" : "var(--muted-text)"
-        }} />
+        <i className={`fas mt-0.5 ${dbStatus === "checking" ? "fa-spinner fa-spin" :
+            dbStatus === "ok" ? "fa-circle-check" : "fa-circle-exclamation"
+          }`} style={{
+            color: dbStatus === "error" ? "#ef4444" : dbStatus === "ok" ? "#22c55e" : "var(--muted-text)"
+          }} />
         <div className="flex-1">
           {dbStatus === "checking" && <p className="text-sm" style={{ color: "var(--muted-text)" }}>Connecting to Supabase…</p>}
           {dbStatus === "ok" && (
@@ -105,8 +104,8 @@ export default function DashboardPage() {
                 {dbError.includes("relation") || dbError.includes("does not exist")
                   ? "Tables not found — make sure you ran the SQL schema in Supabase SQL Editor."
                   : dbError.includes("Invalid API") || dbError.includes("JWT")
-                  ? "Invalid API key — check REACT_APP_SUPABASE_ANON_KEY in Vercel env vars and redeploy."
-                  : `Error: ${dbError}`}
+                    ? "Invalid API key — check REACT_APP_SUPABASE_ANON_KEY in Vercel env vars and redeploy."
+                    : `Error: ${dbError}`}
               </p>
               <code className="text-xs px-2 py-1 rounded" style={{ background: "rgba(0,0,0,0.3)", color: "#ef4444" }}>
                 {dbError}
@@ -163,7 +162,7 @@ export default function DashboardPage() {
           <div key={i} className="admin-stat-card">
             <div className="flex items-center justify-between mb-3">
               <div className="w-10 h-10 rounded-xl flex items-center justify-center"
-                   style={{ background: "var(--glass)", color: s.color }}>
+                style={{ background: "var(--glass)", color: s.color }}>
                 <i className={s.icon} />
               </div>
             </div>
@@ -203,9 +202,9 @@ export default function DashboardPage() {
               <div key={p.id} className="admin-list-item">
                 <div className="flex items-center gap-3 flex-1 min-w-0">
                   <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0"
-                       style={{ background: "var(--glass)" }}>
+                    style={{ background: "var(--glass)" }}>
                     <img src={p.image} alt={p.title} className="w-full h-full object-cover"
-                         onError={(e) => { e.target.style.display = "none"; }} />
+                      onError={(e) => { e.target.style.display = "none"; }} />
                   </div>
                   <div className="min-w-0">
                     <p className="text-sm font-medium truncate" style={{ color: "var(--white-text)" }}>{p.title}</p>

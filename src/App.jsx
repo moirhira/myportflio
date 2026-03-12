@@ -1,18 +1,18 @@
 import { HashRouter, Routes, Route } from "react-router-dom";
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import About from './components/About';
-import Skills from './components/Skills';
-import Projects from './components/Projects';
-import ZeroOps from './components/ZeroOps';
-import Contact from './components/Contact';
-import Footer from './components/Footer';
-import AdminAuth from './admin/AdminAuth';
-import AdminLayout from './admin/AdminLayout';
-import DashboardPage from './admin/DashboardPage';
-import ProjectsPage from './admin/ProjectsPage';
-import ProfilePage from './admin/ProfilePage';
-import SettingsPage from './admin/SettingsPage';
+import Navbar from './pages/Navbar';
+import Hero from './pages/Hero';
+import About from './pages/About';
+import Skills from './pages/Skills';
+import Projects from './pages/Projects';
+import ZeroOps from './pages/ZeroOps';
+import Contact from './pages/Contact';
+import Footer from './pages/Footer';
+import AdminAuth from './admin/components/AdminAuth';
+import AdminLayout from './admin/components/AdminLayout';
+import DashboardPage from './admin/pages/DashboardPage';
+import ProjectsPage from './admin/pages/ProjectsPage';
+import ProfilePage from './admin/pages/ProfilePage';
+import SettingsPage from './admin/pages/SettingsPage';
 
 function Portfolio() {
   return (
